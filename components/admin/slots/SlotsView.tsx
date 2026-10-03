@@ -440,7 +440,6 @@ export default function SlotsView({ initialStatus = "all" }: { initialStatus?: S
         onClose={closeModal}
         title={modalSlot === "new" ? "Create Investment Slot" : "Edit Investment Slot"}
         description="Ventures slots must link to an approved business before they can be published."
-        panelClassName="border-[#4ade80]/40 bg-[#4ade80]/10 backdrop-blur-2xl"
       >
         <SlotForm
           key={modalSlot === "new" ? "new" : modalSlot?.id}
