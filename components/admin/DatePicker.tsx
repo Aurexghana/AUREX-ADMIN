@@ -73,8 +73,17 @@ export default function DatePicker({
     const rect = trigger.getBoundingClientRect();
     const width = Math.min(POPUP_WIDTH_PX, window.innerWidth - VIEWPORT_MARGIN_PX * 2);
     const left = Math.max(VIEWPORT_MARGIN_PX, Math.min(rect.left, window.innerWidth - width - VIEWPORT_MARGIN_PX));
-    const fitsBelow = rect.bottom + 8 + POPUP_HEIGHT_PX <= window.innerHeight - VIEWPORT_MARGIN_PX;
-    const top = fitsBelow ? rect.bottom + 8 : Math.max(VIEWPORT_MARGIN_PX, rect.top - 8 - POPUP_HEIGHT_PX);
+    // Real rendered height once mounted (falls back to an estimate on the
+    // first frame), capped to the viewport — the popup scrolls internally
+    // via max-height below if the window is shorter than the calendar.
+    const maxHeight = window.innerHeight - VIEWPORT_MARGIN_PX * 2;
+    const height = Math.min(popupRef.current?.offsetHeight ?? POPUP_HEIGHT_PX, maxHeight);
+    const spaceBelow = window.innerHeight - VIEWPORT_MARGIN_PX - (rect.bottom + 8);
+    const spaceAbove = rect.top - 8 - VIEWPORT_MARGIN_PX;
+    let top: number;
+    if (height <= spaceBelow) top = rect.bottom + 8;
+    else if (height <= spaceAbove) top = rect.top - 8 - height;
+    else top = window.innerHeight - VIEWPORT_MARGIN_PX - height; // neither side fits: pin to the bottom edge, fully visible
     setPosition((prev) =>
       prev && prev.top === top && prev.left === left && prev.width === width ? prev : { top, left, width },
     );
@@ -158,7 +167,7 @@ export default function DatePicker({
           role="dialog"
           aria-label={ariaLabel}
           style={{ position: "fixed", top: position.top, left: position.left, width: position.width }}
-          className="z-[110] border border-gold/20 bg-panel p-3 shadow-lg"
+          className="z-[110] max-h-[calc(100vh-1rem)] overflow-y-auto border border-gold/20 bg-panel p-3 shadow-lg"
         >
           <div className="mb-2 flex items-center justify-between gap-2">
             <button
