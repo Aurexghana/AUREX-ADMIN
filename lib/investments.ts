@@ -8,6 +8,7 @@ export type InvestmentRecord = {
   id: string;
   memberId: string;
   slotPackage: SlotPackage;
+  packageName: string;
   businessName?: string;
   amountInvestedGhs: number;
   dateInvested: string;
@@ -36,6 +37,7 @@ function toInvestmentRecord(row: InvestmentApiRow): InvestmentRecord {
     id: row.id,
     memberId: row.user_id,
     slotPackage: row.package_type,
+    packageName: row.package_name,
     businessName: row.business_name ?? undefined,
     amountInvestedGhs: Number(row.amount_invested),
     dateInvested: row.start_date,

@@ -19,6 +19,7 @@ const PAYOUT_FREQUENCY_OPTIONS: { value: PayoutFrequency; label: string }[] = [
 ];
 
 export type SlotFormValues = {
+  name: string;
   package: SlotPackage;
   businessId: string;
   minInvestmentGhs: string;
@@ -33,6 +34,7 @@ export type SlotFormValues = {
 
 function toFormValues(slot?: InvestmentSlot): SlotFormValues {
   return {
+    name: slot?.name ?? "",
     package: slot?.package ?? "core",
     businessId: slot?.businessId ?? "",
     minInvestmentGhs: slot ? String(slot.minInvestmentGhs) : "",
@@ -89,6 +91,19 @@ export default function SlotForm({
 
   return (
     <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+      <label className={LABEL_CLASSNAME}>
+        <span className={LABEL_TEXT_CLASSNAME}>Slot Name</span>
+        <input
+          type="text"
+          required
+          maxLength={200}
+          value={values.name}
+          onChange={(e) => set("name", e.target.value)}
+          placeholder="e.g. AUREX Core Pool 3"
+          className={INPUT_CLASSNAME}
+        />
+      </label>
+
       <label className={LABEL_CLASSNAME}>
         <span className={LABEL_TEXT_CLASSNAME}>Package Type</span>
         <Select

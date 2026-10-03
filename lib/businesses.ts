@@ -1,6 +1,6 @@
 import { apiFetch } from "@/lib/api/client";
 import { cached } from "@/lib/cache";
-import { createMember, getMembers, type Member } from "@/lib/members";
+import { fetchMembers, inviteInvestor } from "@/lib/members";
 import { fetchBusinessListings, type BusinessListing } from "@/lib/businessListings";
 
 export type ApprovedBusiness = { id: string; name: string };
@@ -17,10 +17,11 @@ export async function fetchApprovedBusinesses(): Promise<ApprovedBusiness[]> {
 /**
  * A business, from either of its two possible origins:
  *  - "admin_added": created directly by an admin (Add Business flow
- *    below) — mock/in-memory, no backend endpoint exists for this yet,
- *    same convention as MEMBERS in lib/members.ts. Swap
- *    getBusinesses()/createBusiness() for real apiFetch calls (like
- *    lib/packages.ts#createPackage) once one does.
+ *    below) — mock/in-memory, no backend endpoint exists for this yet.
+ *    Swap getBusinesses()/createBusiness() for real apiFetch calls (like
+ *    lib/packages.ts#createPackage) once one does. The owner link uses
+ *    the real /members API (lib/members.ts#fetchMembers/inviteInvestor)
+ *    even though the business record itself is still mock.
  *  - "application": came from the Applications approval pipeline and
  *    has a real, backend-tracked funding listing (lib/businessListings.ts).
  *
@@ -56,9 +57,9 @@ export type CreateBusinessInput = {
   category: string;
   description: string;
   ownerType: BusinessOwnerType;
-  /** "Existing Member" branch — id of a member already in lib/members.ts's MEMBERS. */
+  /** "Existing Member" branch — id of a real registered investor (lib/members.ts#fetchMembers). */
   ownerMemberId?: string;
-  /** "New Member" branch — creates the member (track: "investor") before creating the business. */
+  /** "New Member" branch — invites a new investor (lib/members.ts#inviteInvestor) before creating the business. */
   newOwner?: { nickname: string; realName: string; email: string; phone: string; country: string };
 };
 
@@ -113,13 +114,18 @@ export function updateAdminBusiness(id: string, input: UpdateAdminBusinessInput)
   return business;
 }
 
-export function createBusiness(input: CreateBusinessInput): Business {
-  let owner: Member | undefined;
+export async function createBusiness(input: CreateBusinessInput): Promise<Business> {
+  let ownerMemberId: string | undefined;
+  let ownerMemberNickname: string | undefined;
   if (input.ownerType === "member") {
     if (input.newOwner) {
-      owner = createMember({ ...input.newOwner, track: "investor" });
+      await inviteInvestor(input.newOwner);
+      ownerMemberNickname = input.newOwner.nickname;
     } else if (input.ownerMemberId) {
-      owner = getMembers().find((m) => m.id === input.ownerMemberId);
+      const members = await fetchMembers({ track: "investor" });
+      const owner = members.find((m) => m.id === input.ownerMemberId);
+      ownerMemberId = owner?.id;
+      ownerMemberNickname = owner?.nickname;
     }
   }
 
@@ -129,8 +135,8 @@ export function createBusiness(input: CreateBusinessInput): Business {
     category: input.category,
     description: input.description,
     ownerType: input.ownerType,
-    ownerMemberId: owner?.id,
-    ownerMemberNickname: owner?.nickname,
+    ownerMemberId,
+    ownerMemberNickname,
     createdAt: new Date().toISOString().slice(0, 10),
     source: "admin_added",
   };

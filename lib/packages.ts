@@ -26,6 +26,7 @@ export const SLOT_STATUS_LABEL: Record<SlotStatus, string> = {
 
 export type InvestmentSlot = {
   id: string;
+  name: string;
   package: SlotPackage;
   businessId?: string;
   businessName?: string;
@@ -72,6 +73,7 @@ function toSlotStatus(status: PackageApiRow["status"]): SlotStatus {
 function toInvestmentSlot(row: PackageApiRow): InvestmentSlot {
   return {
     id: row.id,
+    name: row.name,
     package: row.package_type,
     businessId: row.business_id ?? undefined,
     businessName: row.business_name ?? undefined,

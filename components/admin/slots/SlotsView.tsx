@@ -16,7 +16,6 @@ import EmptyState from "@/components/admin/EmptyState";
 import SlotForm, { type SlotFormValues } from "@/components/admin/slots/SlotForm";
 import { PencilIcon, PlusIcon, TrashIcon, LayersIcon, SearchIcon, SpinnerIcon } from "@/components/icons";
 import {
-  SLOT_PACKAGE_LABEL,
   SLOT_STATUS_LABEL,
   canPublishSlot,
   fetchAdminPackages,
@@ -152,7 +151,7 @@ function SlotTable({
                   <StatusDot label={SLOT_STATUS_LABEL[slot.status]} tone={STATUS_TONE[slot.status]} />
                 </td>
                 <td className="px-4 py-3">
-                  <ActionsMenu label={`${SLOT_PACKAGE_LABEL[slot.package]} slot actions`} items={actionItems(slot)} />
+                  <ActionsMenu label={`${slot.name} slot actions`} items={actionItems(slot)} />
                 </td>
               </motion.tr>
             ))}
@@ -171,11 +170,11 @@ function SlotTable({
           >
             <div className="flex items-start justify-between gap-3">
               <span className="font-jakarta text-sm font-semibold text-cream">
-                {slot.businessName ?? SLOT_PACKAGE_LABEL[slot.package]}
+                {slot.businessName ?? slot.name}
               </span>
               <div className="flex items-center gap-2">
                 <StatusDot label={SLOT_STATUS_LABEL[slot.status]} tone={STATUS_TONE[slot.status]} />
-                <ActionsMenu label={`${SLOT_PACKAGE_LABEL[slot.package]} slot actions`} items={actionItems(slot)} />
+                <ActionsMenu label={`${slot.name} slot actions`} items={actionItems(slot)} />
               </div>
             </div>
             <span className="font-sans text-xs text-cream-dim">
@@ -193,7 +192,7 @@ function fromFormValues(values: SlotFormValues): PackageInput {
   return {
     packageType: values.package,
     businessId: values.package === "ventures" ? values.businessId || undefined : undefined,
-    name: `${SLOT_PACKAGE_LABEL[values.package]} — ${values.termMonths || "?"}mo @ ${values.roiRatePercent || "?"}%`,
+    name: values.name.trim(),
     roiRate: Number(values.roiRatePercent) || 0,
     termMonths: Number(values.termMonths) || 0,
     payoutFrequency: values.payoutFrequency,
@@ -213,19 +212,19 @@ const CONFIRM_COPY: Record<
 > = {
   publish: {
     title: "Publish this slot?",
-    description: (slot) => `“${SLOT_PACKAGE_LABEL[slot.package]}” will open for investment immediately.`,
+    description: (slot) => `“${slot.name}” will open for investment immediately.`,
     confirmLabel: "Publish",
     tone: "gold",
   },
   closeEarly: {
     title: "Close this slot early?",
-    description: (slot) => `“${SLOT_PACKAGE_LABEL[slot.package]}” will stop accepting new investment right away.`,
+    description: (slot) => `“${slot.name}” will stop accepting new investment right away.`,
     confirmLabel: "Close Early",
     tone: "danger",
   },
   delete: {
     title: "Delete this draft slot?",
-    description: (slot) => `“${SLOT_PACKAGE_LABEL[slot.package]}” will be permanently deleted. This can't be undone.`,
+    description: (slot) => `“${slot.name}” will be permanently deleted. This can't be undone.`,
     confirmLabel: "Delete",
     tone: "danger",
   },
@@ -314,7 +313,7 @@ export default function SlotsView({ initialStatus = "all" }: { initialStatus?: S
 
   async function handlePublishFromList(slot: InvestmentSlot) {
     if (!canPublishSlot(slot)) {
-      setBanner(`Cannot publish “${SLOT_PACKAGE_LABEL[slot.package]}”: it needs a linked, approved business first.`);
+      setBanner(`Cannot publish “${slot.name}”: it needs a linked, approved business first.`);
       return;
     }
     try {
@@ -330,7 +329,7 @@ export default function SlotsView({ initialStatus = "all" }: { initialStatus?: S
     try {
       const closed = await closePackageEarly(slot.id);
       replaceOrAppend(closed);
-      setBanner(`“${SLOT_PACKAGE_LABEL[slot.package]}” slot closed early.`);
+      setBanner(`“${slot.name}” slot closed early.`);
     } catch (err) {
       setBanner(err instanceof ApiError ? err.message : "Failed to close slot.");
     }
@@ -340,7 +339,7 @@ export default function SlotsView({ initialStatus = "all" }: { initialStatus?: S
     try {
       await deletePackage(slot.id);
       setSlots((prev) => prev.filter((s) => s.id !== slot.id));
-      setBanner(`“${SLOT_PACKAGE_LABEL[slot.package]}” draft deleted.`);
+      setBanner(`“${slot.name}” draft deleted.`);
     } catch (err) {
       setBanner(err instanceof ApiError ? err.message : "Failed to delete slot.");
     }

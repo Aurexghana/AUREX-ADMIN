@@ -16,7 +16,8 @@ import MemberForm from "@/components/admin/members/MemberForm";
 import { AVATAR_CLASSNAME, DANGER_ROW_CLASSNAME, handleRowClick } from "@/components/admin/tableStyles";
 import { PlusIcon, SearchIcon, SpinnerIcon, UsersIcon } from "@/components/icons";
 import { useSession } from "@/lib/auth";
-import { createMember, fetchMembers, type Member, type MemberStatus, type MemberTrack, type NewMemberInput } from "@/lib/members";
+import { ApiError } from "@/lib/api/client";
+import { fetchMembers, inviteInvestor, type Member, type MemberStatus, type MemberTrack, type NewInvestorInput } from "@/lib/members";
 
 const STATUS_TONE: Record<MemberStatus, BadgeTone> = {
   active: "gold",
@@ -69,12 +70,17 @@ export default function MembersView() {
     [filtered, currentPage],
   );
 
-  async function handleAddInvestor(input: NewMemberInput) {
-    const created = createMember(input);
-    setMembers((prev) => [created, ...prev]);
-    setPage(1);
-    setBanner(`${created.nickname} added as an investor.`);
-    setIsAddModalOpen(false);
+  async function handleAddInvestor(input: NewInvestorInput) {
+    try {
+      await inviteInvestor(input);
+      setBanner(`Invitation sent to ${input.nickname} — they'll appear here once they activate their account.`);
+    } catch (err) {
+      setBanner(
+        err instanceof ApiError ? `Couldn't invite this investor: ${err.message}` : "Something went wrong sending this invitation.",
+      );
+    } finally {
+      setIsAddModalOpen(false);
+    }
   }
 
   return (
