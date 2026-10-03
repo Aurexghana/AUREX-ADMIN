@@ -12,7 +12,6 @@ import { ArrowRightIcon, SpinnerIcon } from "@/components/icons";
 import { useSession } from "@/lib/auth";
 import { fetchMemberById, type Member, type MemberStatus } from "@/lib/members";
 import { fetchInvestments, type InvestmentRecord } from "@/lib/investments";
-import { SLOT_PACKAGE_LABEL } from "@/lib/packages";
 import {
   fetchBusinessListings,
   LISTING_STATUS_LABEL,
@@ -39,7 +38,7 @@ function Field({ label, value }: { label: string; value: string }) {
 }
 
 function slotLabel(record: InvestmentRecord) {
-  return record.businessName ?? SLOT_PACKAGE_LABEL[record.slotPackage];
+  return record.businessName ?? record.packageName;
 }
 
 export default function MemberDetailView({ id }: { id: string }) {

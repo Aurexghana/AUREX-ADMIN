@@ -5,8 +5,9 @@ import { hoverScale } from "@/lib/motion";
 import { motion } from "framer-motion";
 import { SpinnerIcon, UploadIcon } from "@/components/icons";
 import Select from "@/components/admin/Select";
+import ComboSelect from "@/components/admin/ComboSelect";
 import DatePicker from "@/components/admin/DatePicker";
-import { SLOT_PACKAGE_LABEL, type InvestmentSlot } from "@/lib/packages";
+import type { InvestmentSlot } from "@/lib/packages";
 import type { Member } from "@/lib/members";
 
 const INPUT_CLASSNAME =
@@ -87,25 +88,25 @@ export default function InvestmentForm({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className={LABEL_CLASSNAME}>
           <span className={LABEL_TEXT_CLASSNAME}>Member</span>
-          <Select
+          <ComboSelect
             value={values.memberId}
             onChange={(v) => set("memberId", v)}
-            options={[
-              { value: "", label: "Select an investor" },
-              ...investors.map((m) => ({ value: m.id, label: m.nickname })),
-            ]}
+            options={investors.map((m) => ({ value: m.id, label: m.nickname }))}
+            placeholder="Select an investor"
+            searchPlaceholder="Search investors..."
+            ariaLabel="Member"
           />
         </label>
 
         <label className={LABEL_CLASSNAME}>
           <span className={LABEL_TEXT_CLASSNAME}>Slot / Package</span>
-          <Select
+          <ComboSelect
             value={values.packageId}
             onChange={(v) => set("packageId", v)}
-            options={[
-              { value: "", label: "Select an open slot" },
-              ...openSlots.map((s) => ({ value: s.id, label: `${SLOT_PACKAGE_LABEL[s.package]} (${s.ratePercentLabel})` })),
-            ]}
+            options={openSlots.map((s) => ({ value: s.id, label: `${s.name} (${s.ratePercentLabel})` }))}
+            placeholder="Select an open slot"
+            searchPlaceholder="Search slots..."
+            ariaLabel="Slot / Package"
           />
         </label>
 

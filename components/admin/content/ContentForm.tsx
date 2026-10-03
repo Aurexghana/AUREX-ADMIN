@@ -62,7 +62,7 @@ export default function ContentForm({
           value={values.state}
           onChange={(v) => set("state", v as ContentBlockState)}
           options={[
-            { value: "draft", label: "Draft (not shown on the public site)" },
+            { value: "draft", label: "Draft" },
             { value: "published", label: "Published" },
           ]}
         />

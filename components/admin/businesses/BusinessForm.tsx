@@ -5,6 +5,8 @@ import { hoverScale } from "@/lib/motion";
 import { motion } from "framer-motion";
 import { SpinnerIcon } from "@/components/icons";
 import Select from "@/components/admin/Select";
+import ComboSelect from "@/components/admin/ComboSelect";
+import { getCountryList } from "@/lib/countries";
 import type { Member } from "@/lib/members";
 import type { CreateBusinessInput } from "@/lib/businesses";
 
@@ -92,6 +94,7 @@ export default function BusinessForm({
 }) {
   const [values, setValues] = useState<BusinessFormValues>(EMPTY_VALUES);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const countryOptions = getCountryList().map((c) => ({ value: c.code, label: c.name }));
 
   function set<K extends keyof BusinessFormValues>(key: K, value: BusinessFormValues[K]) {
     setValues((v) => ({ ...v, [key]: value }));
@@ -101,7 +104,7 @@ export default function BusinessForm({
     values.ownerChoice === "admin" ||
     (values.ownerChoice === "existing" && values.ownerMemberId !== "") ||
     (values.ownerChoice === "new" &&
-      values.newOwnerNickname !== "" &&
+      values.newOwnerNickname.length >= 3 &&
       values.newOwnerRealName !== "" &&
       values.newOwnerEmail !== "" &&
       values.newOwnerPhone !== "" &&
@@ -187,6 +190,8 @@ export default function BusinessForm({
               value={values.newOwnerNickname}
               onChange={(e) => set("newOwnerNickname", e.target.value)}
               placeholder="e.g. HarvestHQ"
+              minLength={3}
+              maxLength={20}
               className={INPUT_CLASSNAME}
             />
           </label>
@@ -222,12 +227,13 @@ export default function BusinessForm({
           </label>
           <label className={`${LABEL_CLASSNAME} sm:col-span-2`}>
             <span className={LABEL_TEXT_CLASSNAME}>Country</span>
-            <input
-              type="text"
+            <ComboSelect
               value={values.newOwnerCountry}
-              onChange={(e) => set("newOwnerCountry", e.target.value)}
-              placeholder="e.g. Ghana"
-              className={INPUT_CLASSNAME}
+              onChange={(v) => set("newOwnerCountry", v)}
+              options={countryOptions}
+              placeholder="Select a country"
+              searchPlaceholder="Search countries…"
+              ariaLabel="Country"
             />
           </label>
         </div>
