@@ -29,7 +29,7 @@ const EMPTY_VALUES: MemberFormValues = {
   country: "",
 };
 
-/** Registers a new investor directly — same fields as the "New Member"
+/** Registers a new investor directly - same fields as the "New Member"
  *  branch of the Add Business flow (components/admin/businesses/BusinessForm.tsx),
  *  but standalone: this doesn't require a business to go with it. */
 export default function MemberForm({

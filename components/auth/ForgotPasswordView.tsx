@@ -17,7 +17,7 @@ const BACK_TO_SIGN_IN = (
 );
 
 /**
- * No real email delivery behind this — no backend at all yet, see
+ * No real email delivery behind this - no backend at all yet, see
  * lib/auth.ts's own comment. Submitting just mocks the "check your
  * inbox" state after a brief delay, same honesty as this app's other
  * stubbed flows (e.g. InvestmentForm's file input, which only ever

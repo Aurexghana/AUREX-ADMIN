@@ -5,14 +5,14 @@ import { formatGhs } from "@/lib/formatters";
 import type { MonthlyInvestedPoint } from "@/lib/investments";
 
 // Fixed viewBox the SVG scales fluidly from (width:100%, aspect-ratio
-// locked via the wrapper's own style) — lets pointer math stay in one
+// locked via the wrapper's own style) - lets pointer math stay in one
 // coordinate space regardless of the rendered size.
 const VB_WIDTH = 640;
 const VB_HEIGHT = 260;
 const PAD = { top: 24, right: 16, bottom: 28, left: 56 };
 
 /**
- * A single-series cumulative trend line — per dataviz guidance, a trend-
+ * A single-series cumulative trend line - per dataviz guidance, a trend-
  * over-time job takes one hue (gold-deep, the deepest/most-saturated
  * shade in the brand's one hue family) rather than a rainbow.
  *
@@ -20,20 +20,20 @@ const PAD = { top: 24, right: 16, bottom: 28, left: 56 };
  * pointer and snaps to the nearest month; the tooltip's value is the
  * strong element, the month secondary. The exact monthly figures are
  * also reachable without hovering at all via the "Show data" table
- * toggle underneath — tooltips enhance, they never gate.
+ * toggle underneath - tooltips enhance, they never gate.
  *
  * Light-mode note: gold-deep only reaches ~2.6:1 against this brand's
  * near-white light surface (measured with the skill's own contrast()
- * checker) — below the 3:1 mark floor, and there's no deeper gold shade
+ * checker) - below the 3:1 mark floor, and there's no deeper gold shade
  * available: a darker light-mode-only gold override was tried and
- * reverted per feedback (it read as brown, not gold — see
+ * reverted per feedback (it read as brown, not gold - see
  * app/globals.css's own comment), so this is the brand's one gold,
  * unchanged across both themes. Per the skill's documented mitigation
  * for exactly this case (a WARN is legal only with a secondary
  * encoding, never dismissed outright), every value here is also carried
  * by direct text labels (the endpoint figure, the axis ticks, the
  * tooltip, the data table) in the theme-flipping cream/cream-dim text
- * tokens, which contrast comfortably in both modes — so the line's
+ * tokens, which contrast comfortably in both modes - so the line's
  * shape is a visual aid, never the only carrier of the number.
  */
 export default function TrendChart({ data }: { data: MonthlyInvestedPoint[] }) {
@@ -92,7 +92,7 @@ export default function TrendChart({ data }: { data: MonthlyInvestedPoint[] }) {
           role="img"
           aria-label={`Cumulative amount invested by month, from ${data[0].label} to ${data[data.length - 1].label}, ending at ${formatGhs(data[data.length - 1].cumulativeGhs)}`}
         >
-          {/* gridlines — hairline, recessive, one step off the surface */}
+          {/* gridlines - hairline, recessive, one step off the surface */}
           {yTicks.map((tick) => (
             <g key={tick.value}>
               <line x1={PAD.left} x2={VB_WIDTH - PAD.right} y1={tick.y} y2={tick.y} stroke="var(--color-grid-line)" strokeWidth={1} />
@@ -109,7 +109,7 @@ export default function TrendChart({ data }: { data: MonthlyInvestedPoint[] }) {
             </text>
           ))}
 
-          {/* area wash — a wash under the line, never a saturated block */}
+          {/* area wash - a wash under the line, never a saturated block */}
           <path d={areaPath} className="fill-gold-deep" opacity={0.1} />
 
           {/* the line itself */}
@@ -133,7 +133,7 @@ export default function TrendChart({ data }: { data: MonthlyInvestedPoint[] }) {
             <line x1={hovered.x} x2={hovered.x} y1={PAD.top} y2={VB_HEIGHT - PAD.bottom} className="stroke-gold-deep" strokeOpacity={0.35} strokeWidth={1} />
           )}
 
-          {/* always-visible endpoint label — the headline figure, not
+          {/* always-visible endpoint label - the headline figure, not
               gated behind hover */}
           {last && (
             <text x={last.x} y={last.y - 12} textAnchor="end" className="fill-cream text-xs font-semibold">

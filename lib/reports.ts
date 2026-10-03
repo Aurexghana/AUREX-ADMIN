@@ -1,13 +1,13 @@
 /**
- * The Report/Complaint Inbox's own data — issues Investors and Business
+ * The Report/Complaint Inbox's own data - issues Investors and Business
  * Owners have filed via their dashboard's "Report" tab. Backed by
  * Aurex-backend's `/reports` endpoints.
  *
  * `category` is free text on the backend (each frontend keeps its own
- * per-role taxonomy — see Aurex-backend's reports.table.ts for why), not
+ * per-role taxonomy - see Aurex-backend's reports.table.ts for why), not
  * the closed 5-value union this file used to define, so filter options
  * for it are built from whatever categories are actually present in the
- * fetched reports rather than a fixed list — see ReportsView.tsx.
+ * fetched reports rather than a fixed list - see ReportsView.tsx.
  */
 
 import { apiFetch, apiFetchPaginated } from "@/lib/api/client";
@@ -23,7 +23,7 @@ export const PRIORITY_LABEL: Record<ReportPriority, string> = {
   critical: "Critical",
 };
 
-/** Highest-first rank — used for both the "Priority" sort and the
+/** Highest-first rank - used for both the "Priority" sort and the
  *  default triage sort's tie-breaker. */
 export const PRIORITY_RANK: Record<ReportPriority, number> = {
   critical: 4,
@@ -38,7 +38,7 @@ export const STATUS_LABEL: Record<ReportStatus, string> = {
   resolved: "Resolved",
 };
 
-/** Open-first rank — the default triage sort's primary key. */
+/** Open-first rank - the default triage sort's primary key. */
 export const STATUS_RANK: Record<ReportStatus, number> = {
   open: 0,
   in_progress: 1,
@@ -53,7 +53,7 @@ export type Report = {
   description: string;
   attachment?: { fileName: string; uploadedAt: string; url: string };
   /** Null/undefined means "not related to a specific record". A flat
-   *  label, not a typed link — the backend snapshots this as text rather
+   *  label, not a typed link - the backend snapshots this as text rather
    *  than a live FK an admin UI could re-resolve (there's no admin-facing
    *  investments/listings lookup endpoint), see ReportDetailView.tsx. */
   relatedRecordLabel?: string;
@@ -79,7 +79,7 @@ type ReportApiRow = {
   created_at: string;
 };
 
-// Matches lib/applications.ts's own fileNameFromUrl/toDocumentRef helpers —
+// Matches lib/applications.ts's own fileNameFromUrl/toDocumentRef helpers -
 // not worth sharing a util module between the two for one tiny function.
 function fileNameFromUrl(url: string | null): string | undefined {
   if (!url) return undefined;

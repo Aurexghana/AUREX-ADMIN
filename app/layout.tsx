@@ -5,7 +5,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
-// Same next/font/google setup as the main AUREX site's app/layout.tsx —
+// Same next/font/google setup as the main AUREX site's app/layout.tsx -
 // same families, weights, and CSS variable names, since app/globals.css's
 // `@theme inline` block (imported verbatim from that repo) references
 // these exact --font-* variables.
@@ -60,7 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       // The theme-init script below sets `data-theme` on this exact element
-      // before hydration, based on localStorage — a real, expected attribute
+      // before hydration, based on localStorage - a real, expected attribute
       // mismatch between the server-rendered markup (which has no idea what
       // was in localStorage) and the client's first paint. That's precisely
       // what suppressHydrationWarning exists for; without it React logs a
@@ -78,7 +78,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="relative min-h-full flex flex-col bg-ink">
         {/* reducedMotion="user" makes every motion.* element in this app
-            honor prefers-reduced-motion automatically — same single source
+            honor prefers-reduced-motion automatically - same single source
             of motion-safety as the main site, kept here so no admin page
             has to opt in itself.
 

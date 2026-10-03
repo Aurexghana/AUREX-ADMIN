@@ -34,7 +34,7 @@ const STATUS_TONE: Record<ListingStatus, BadgeTone> = {
 };
 
 function ownerLabel(business: Business): string {
-  return business.ownerType === "admin" ? "AUREX (Admin)" : (business.ownerMemberNickname ?? "—");
+  return business.ownerType === "admin" ? "AUREX (Admin)" : (business.ownerMemberNickname ?? "-");
 }
 
 function statusOf(business: Business): { label: string; tone: BadgeTone; filterValue: StatusFilter } {
@@ -45,13 +45,13 @@ function statusOf(business: Business): { label: string; tone: BadgeTone; filterV
 }
 
 /**
- * Every business AUREX knows about — admin-added directly (own or a
+ * Every business AUREX knows about - admin-added directly (own or a
  * member's) plus every business that came through the Applications
  * approval pipeline and has a real funding listing (lib/businessListings.ts)
  * behind it. Merges what used to be two separate pages/nav entries
  * ("Businesses" and "Business Listings") into one, via
  * lib/businesses.ts#getAllBusinesses. Click a row to open its detail
- * page (app/(admin)/businesses/[id]) — status, funding, and every other
+ * page (app/(admin)/businesses/[id]) - status, funding, and every other
  * field are managed there, same as the Members page's own detail view.
  */
 export default function BusinessesView({ initialStatus = "all" }: { initialStatus?: StatusFilter }) {
@@ -111,7 +111,7 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
     >
       <PageHeader
         title="Businesses"
-        description="Every business AUREX knows about — self-added, member-owned, or raising funds as a published listing. Click one to manage it."
+        description="Every business AUREX knows about: self-added, member-owned, or raising funds as a published listing. Click one to manage it."
         action={
           <motion.button
             {...hoverScale}
@@ -224,10 +224,10 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
                           <td className="px-4 py-3 font-sans text-sm text-cream-dim">
                             {business.listing
                               ? `${formatGhs(business.listing.amountRaisedGhs)} of ${formatGhs(business.listing.fundingGoalGhs)} (${getFundingPercent(business.listing)}%)`
-                              : "—"}
+                              : "-"}
                           </td>
                           <td className="px-4 py-3 font-sans text-sm text-cream-dim">
-                            {business.createdAt ? formatDisplayDate(business.createdAt) : "—"}
+                            {business.createdAt ? formatDisplayDate(business.createdAt) : "-"}
                           </td>
                         </motion.tr>
                       );
@@ -273,7 +273,7 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Add Business"
-        description="It can be AUREX's own business, or added on behalf of a member — existing or brand new."
+        description="It can be AUREX's own business, or added on behalf of a member (existing or brand new)."
       >
         <BusinessForm members={members} onSubmit={handleCreate} />
       </Modal>

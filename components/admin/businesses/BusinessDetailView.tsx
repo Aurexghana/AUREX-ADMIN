@@ -39,7 +39,7 @@ function Field({ label, value }: { label: string; value: string }) {
 }
 
 function ownerLabel(business: Business): string {
-  return business.ownerType === "admin" ? "AUREX (Admin)" : (business.ownerMemberNickname ?? "—");
+  return business.ownerType === "admin" ? "AUREX (Admin)" : (business.ownerMemberNickname ?? "-");
 }
 
 export default function BusinessDetailView({ id }: { id: string }) {
@@ -147,11 +147,11 @@ export default function BusinessDetailView({ id }: { id: string }) {
         </div>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="Business Name" value={business.name} />
-          <Field label="Category" value={business.category || "—"} />
+          <Field label="Category" value={business.category || "-"} />
           <Field label="Owner" value={ownerLabel(business)} />
-          <Field label="Added" value={business.createdAt ? formatDisplayDate(business.createdAt) : "—"} />
+          <Field label="Added" value={business.createdAt ? formatDisplayDate(business.createdAt) : "-"} />
         </div>
-        <Field label="Description" value={business.description || "—"} />
+        <Field label="Description" value={business.description || "-"} />
       </motion.section>
 
       {business.listing ? (
@@ -176,9 +176,9 @@ export default function BusinessDetailView({ id }: { id: string }) {
             />
             <Field label="Backers" value={String(business.listing.backerCount)} />
           </div>
-          <Field label="Funding Purpose" value={business.listing.fundingPurpose || "—"} />
+          <Field label="Funding Purpose" value={business.listing.fundingPurpose || "-"} />
           <p className="font-sans text-xs text-cream-dim">
-            Status and funding goal come from the linked Ventures package — edit those on the Slots page.
+            Status and funding goal come from the linked Ventures package. Edit those on the Slots page.
           </p>
 
           {business.listing.businessRegDocument && (

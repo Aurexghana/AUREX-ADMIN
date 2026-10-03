@@ -6,14 +6,14 @@ import type { ComponentType, SVGProps } from "react";
 import { staggerItem, hoverLift } from "@/lib/motion";
 
 /**
- * One at-a-glance stat tile on the Admin Overview page — always a link
+ * One at-a-glance stat tile on the Admin Overview page - always a link
  * into the section it summarizes, per the brief ("each stat links into
  * its relevant section below"). `hoverLift` (not `hoverScale`) matches
  * the main site's own card-hover treatment for a clickable tile, rather
  * than a scale-up meant for buttons.
  *
  * `icon` reuses the exact same icon already used for that section's own
- * nav link (see AdminShell's NAV_LINKS) — per feedback asking for an
+ * nav link (see AdminShell's NAV_LINKS) - per feedback asking for an
  * image on each stat, this borrows what already exists rather than
  * introducing new artwork solely for this tile. The earlier
  * gradient-and-glow accent bar tried here is removed per that same

@@ -1,7 +1,7 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
 
 /**
- * One labeled input for the auth forms — a leading icon (matches the
+ * One labeled input for the auth forms - a leading icon (matches the
  * reference direction: email/lock glyphs inside the field) and an
  * optional trailing slot (the password show/hide toggle). Same
  * border/panel treatment as every other text input in this app

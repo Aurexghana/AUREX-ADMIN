@@ -59,7 +59,7 @@ const PAGE_SIZE = 10;
 
 /** Open (or in-progress) + high/critical-priority reports get the same
  *  red-accent row treatment DANGER_ROW_CLASSNAME uses elsewhere for
- *  rejected/suspended/closed rows — a different meaning (urgent, not
+ *  rejected/suspended/closed rows - a different meaning (urgent, not
  *  negative) but the same "needs your attention" red reads fine for
  *  both, and reusing it means one less color introduced into this
  *  screen. Already-resolved reports never get it: nothing left to triage. */
@@ -77,7 +77,7 @@ function compareReports(a: Report, b: Report, sortKey: SortKey, sortDir: "asc" |
     return sortDir === "asc" ? diff : -diff;
   }
   // Default triage sort: open before in-progress before resolved, then
-  // highest priority first, then newest first — "open + high-priority
+  // highest priority first, then newest first - "open + high-priority
   // reports surfaced first" per the brief, without needing either sort
   // button pressed.
   const statusDiff = STATUS_RANK[a.status] - STATUS_RANK[b.status];
@@ -112,11 +112,11 @@ function SortButton({
 }
 
 /**
- * The Report/Complaint Inbox list — reports Investors and Business
+ * The Report/Complaint Inbox list - reports Investors and Business
  * Owners filed via their dashboard's "Report" tab. Session-gated fetch
  * (mirrors ApplicationsView.tsx): loads up to 100 reports plus every
  * member once, then all filtering/sorting happens client-side in a
- * useMemo — same convention as ApplicationsView, even though the backend
+ * useMemo - same convention as ApplicationsView, even though the backend
  * itself also supports server-side filter/sort query params.
  * `initialStatus` seeds the filter from the Overview page's own "Open
  * Reports" stat link (?status=open).
@@ -318,7 +318,7 @@ export default function ReportsView({ initialStatus = "all" }: { initialStatus?:
                           </span>
                         </Link>
                       </td>
-                      <td className="px-4 py-3 font-sans text-sm text-cream-dim">{member ? TRACK_LABEL[member.track] : "—"}</td>
+                      <td className="px-4 py-3 font-sans text-sm text-cream-dim">{member ? TRACK_LABEL[member.track] : "-"}</td>
                       <td className="px-4 py-3 font-sans text-sm text-cream-dim">{report.category}</td>
                       <td className="max-w-64 truncate px-4 py-3 font-sans text-sm text-cream-dim">{report.subject}</td>
                       <td className="px-4 py-3">
@@ -359,7 +359,7 @@ export default function ReportsView({ initialStatus = "all" }: { initialStatus?:
                     <span className="font-sans text-sm text-cream">{report.subject}</span>
                     <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-cream-dim">
                       <span>
-                        {member ? TRACK_LABEL[member.track] : "—"} · {report.category}
+                        {member ? TRACK_LABEL[member.track] : "-"} · {report.category}
                       </span>
                       <PriorityTag label={PRIORITY_LABEL[report.priority]} tone={PRIORITY_TONE[report.priority]} />
                     </div>

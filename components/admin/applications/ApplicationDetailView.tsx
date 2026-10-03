@@ -46,9 +46,9 @@ function Field({ label, value }: { label: string; value: string }) {
 /**
  * The Application detail/review screen. Fetches its own data (see
  * ApplicationsView's own comment for why this can't be a server-fetched
- * prop) — `id` is all the parent route needs to pass down.
+ * prop) - `id` is all the parent route needs to pass down.
  *
- * `scrollReveal` on each section rather than one big fade-in — this is
+ * `scrollReveal` on each section rather than one big fade-in - this is
  * the one admin screen genuinely long enough (personal info + business
  * info + two documents + actions) to benefit from content revealing as
  * you scroll, per the brief's own guidance for "detail views with lots
@@ -200,10 +200,10 @@ export default function ApplicationDetailView({ id }: { id: string }) {
         <motion.section {...scrollReveal} className="flex flex-col gap-5 border border-grid-line bg-panel/20 p-6">
           <h2 className="font-jakarta text-lg font-semibold text-cream">Business Details</h2>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <Field label="Business Name" value={application.businessName ?? "—"} />
+            <Field label="Business Name" value={application.businessName ?? "-"} />
             <Field label="Funding Range" value={formatFundingRange(application.fundingRange)} />
           </div>
-          <Field label="Description" value={application.businessDescription ?? "—"} />
+          <Field label="Description" value={application.businessDescription ?? "-"} />
         </motion.section>
       )}
 

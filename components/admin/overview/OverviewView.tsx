@@ -31,17 +31,17 @@ const EMPTY_PACKAGE_ALLOCATION: PackageAllocation = { core: 0, ventures: 0 };
  * The Admin landing page. Two rows below the header, each pairing a
  * "main" element with supporting detail beside it:
  *
- *   1. The stat tiles (no "Total Invested" tile — the trend chart below
+ *   1. The stat tiles (no "Total Invested" tile - the trend chart below
  *      already answers that, as its own always-visible endpoint label,
  *      so the number isn't dropped, just not duplicated) beside the
- *      package-allocation pie chart. Five tiles, not four — the odd one
+ *      package-allocation pie chart. Five tiles, not four - the odd one
  *      out ("Open Reports", the Report/Complaint Inbox's own tie-in
  *      here) spans both columns on its own row rather than leaving a
  *      lopsided half-empty row in the 2-column grid.
  *   2. The invested-over-time trend chart beside the applications-by-
  *      status and members-by-track breakdowns, stacked in a column.
  *
- * No "Funding Progress by Listing" here anymore — the Business Listings
+ * No "Funding Progress by Listing" here anymore - the Business Listings
  * page itself already shows raised/goal per listing; this page stays
  * about platform-wide shape (where members come from, where money goes),
  * not a duplicate of that list.
@@ -51,7 +51,7 @@ const EMPTY_PACKAGE_ALLOCATION: PackageAllocation = { core: 0, ventures: 0 };
  * `scrollReveal` for the two chart rows below, per the brief's own
  * guidance for a page long enough to benefit from content revealing as
  * you scroll. See the dataviz skill's own reasoning (in each chart
- * component) for why the color choices are what they are — this brand
+ * component) for why the color choices are what they are - this brand
  * has one real hue (gold) plus its already-established green/red status
  * pair, not an invented multi-hue categorical palette.
  */
@@ -168,7 +168,7 @@ export default function OverviewView() {
         {/* This column stretches to match the trend chart's height (the
             grid row's default align-items: stretch), and each card below
             is flex-1 so the pair splits that full height evenly instead
-            of sitting shorter with dead space underneath — the segmented
+            of sitting shorter with dead space underneath - the segmented
             bar itself stays a "thin mark" per the dataviz mark spec;
             it's the card's height, not the bar's, that now matches. */}
         <div className="flex flex-col gap-4">

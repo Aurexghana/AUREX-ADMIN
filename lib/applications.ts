@@ -1,7 +1,7 @@
 import { apiFetch, apiFetchPaginated } from "@/lib/api/client";
 import { cached, invalidate } from "@/lib/cache";
 
-// Admin sign-ups no longer flow through this queue — see lib/admins.ts
+// Admin sign-ups no longer flow through this queue - see lib/admins.ts
 // and its dedicated /admins endpoints (pending-admin approval now lives
 // on the admin's own user record, not a second application row).
 export type ApplicationTrack = "investor" | "business";
@@ -36,12 +36,12 @@ const FUNDING_RANGE_LABELS: Record<string, string> = {
 };
 
 export function formatFundingRange(value?: string): string {
-  if (!value) return "—";
+  if (!value) return "-";
   return FUNDING_RANGE_LABELS[value] ?? value;
 }
 
 // Matches Aurex-backend's `applications` table shape exactly (raw row,
-// snake_case, JSON-serialized dates as strings) — the applications
+// snake_case, JSON-serialized dates as strings) - the applications
 // endpoints return the row as-is, same convention as /payments.
 type ApplicationApiRow = {
   id: string;
@@ -120,7 +120,7 @@ export async function getApplications(filters: { status?: ApplicationStatus } = 
   const params = new URLSearchParams({ limit: "100" });
   if (filters.status) params.set("status", filters.status);
   try {
-    // Cache wraps only the raw request — an error rejects the cached
+    // Cache wraps only the raw request - an error rejects the cached
     // promise without storing anything, so a failed fetch isn't cached
     // as an empty result and gets retried next call.
     const { data } = await cached(`applications:${params.toString()}`, () =>

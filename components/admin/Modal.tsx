@@ -7,7 +7,7 @@ import { CloseIcon } from "@/components/icons";
 
 /**
  * Shared modal chrome for the Slot/Listing create-edit forms and the
- * Investment earnings-update action — same backdrop+panel treatment and
+ * Investment earnings-update action - same backdrop+panel treatment and
  * enter/exit timing as the main site's own JoinAurexModal (backdrop
  * click + Escape to close, body scroll locked while open), reused here
  * rather than three near-identical one-off modals.

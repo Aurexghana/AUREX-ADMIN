@@ -1,12 +1,12 @@
 /**
  * A tiny in-memory GET cache, scoped to the browser tab's lifetime. Every
  * admin list view re-fetches its full result set on mount (see e.g.
- * ApplicationsView/ReportsView's own session-gated useEffect) — without
+ * ApplicationsView/ReportsView's own session-gated useEffect) - without
  * this, switching between pages in the sidebar re-triggers that fetch
  * every single time, even seconds after the same data was just loaded.
  *
  * A module-level Map survives client-side navigation (Next.js's App
- * Router keeps the JS bundle loaded between page switches — it only
+ * Router keeps the JS bundle loaded between page switches - it only
  * resets on a hard reload), so this needs no provider or storage of its
  * own. Concurrent callers for the same key share one in-flight request
  * instead of firing duplicate ones.

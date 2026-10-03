@@ -1,6 +1,6 @@
 import { Variants } from "framer-motion";
 
-// Imported 1:1 from the main AUREX site's lib/motion.ts — the single
+// Imported 1:1 from the main AUREX site's lib/motion.ts - the single
 // source of truth for every Framer Motion variant used across both apps.
 // Do not add new one-off variants here; if a screen needs a new motion
 // pattern, add it to the main site's lib/motion.ts first and re-sync.
@@ -14,13 +14,13 @@ export const pageTransition: Variants = {
   exit: { opacity: 0, y: -12, transition: { duration: 0.25, ease: [0.4, 0, 1, 1] } },
 };
 
-// Same enter timing as pageTransition, opacity only — no `y`, and no
+// Same enter timing as pageTransition, opacity only - no `y`, and no
 // `exit`. Used for the route-level transition in
 // components/PageTransition.tsx, which:
 //   - can't use `y`: that wrapper sits around each page's whole tree,
 //     including any `fixed` chrome (a sidebar/topbar here), and any
 //     `transform` (exactly how Framer Motion animates `y`) on an ancestor
-//     creates a new containing block for `position: fixed` descendants — a
+//     creates a new containing block for `position: fixed` descendants - a
 //     y-animated wrapper would briefly detach fixed chrome from the
 //     viewport and reattach it to the transitioning wrapper instead.
 //   - doesn't animate `exit` at all, on purpose: pairing this with
@@ -82,8 +82,8 @@ export const hoverLift = {
   transition: { duration: 0.2, ease: "easeOut" },
 } as const;
 
-// A much more emphatic version of hoverLift — noticeable lift, a visible
-// scale-up, and a slight tilt for the "should tilt or enlarge" feel — used
+// A much more emphatic version of hoverLift - noticeable lift, a visible
+// scale-up, and a slight tilt for the "should tilt or enlarge" feel - used
 // on the main site's How it Works / Why Aurex cards specifically. Kept
 // separate from hoverLift rather than amplifying it in place. Not expected
 // to see much use in this admin app (per the brief, admin motion should

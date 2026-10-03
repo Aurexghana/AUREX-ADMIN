@@ -64,7 +64,7 @@ function SuperAdminTag() {
 }
 
 /**
- * Admin account roster — every admin-role user, including ones still
+ * Admin account roster - every admin-role user, including ones still
  * awaiting approval from `/auth/register-admin`. Backed by the real
  * `/admins` endpoints. Approving/rejecting a pending admin and clicking
  * through to a full profile (AdminDetailView) are super-admin-only,

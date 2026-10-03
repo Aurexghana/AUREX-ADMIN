@@ -13,12 +13,12 @@ const GAP_DEG = 3; // angular surface gap between the two slices
 type Slice = { key: "core" | "ventures"; label: string; value: number; colorClassName: string };
 
 // Fixed identity, not by current magnitude: "color follows the entity,
-// never its rank" (dataviz skill) — if Ventures ever overtakes Core's
+// never its rank" (dataviz skill) - if Ventures ever overtakes Core's
 // share, these two colors must NOT swap, or a filter/time-range change
 // would repaint the survivors. Core (the flagship product, always named
 // first in lib/investmentSlots.ts's own SLOT_PACKAGE_LABEL) keeps the
-// brand's one real accent; Ventures — no second brand hue exists to
-// validate — takes the neutral, same "emphasis" treatment as the
+// brand's one real accent; Ventures - no second brand hue exists to
+// validate - takes the neutral, same "emphasis" treatment as the
 // Members-by-Track chart beside it.
 const SLICE_ORDER: Omit<Slice, "value">[] = [
   { key: "core", label: "AUREX Core", colorClassName: "fill-gold-deep" },
@@ -29,7 +29,7 @@ function polarToCartesian(angleDeg: number, r: number) {
   const rad = ((angleDeg - 90) * Math.PI) / 180;
   // Rounded to 3dp: Math.cos/sin can return a last-bit-different float
   // between the server's and the client's JS engine for the exact same
-  // input, which — left at full precision — turns into a genuine SSR/
+  // input, which - left at full precision - turns into a genuine SSR/
   // client hydration mismatch on this path's `d` attribute (observed:
   // 184.06491820341776 vs 184.0649182034178). Rounding before
   // stringifying normalizes both sides to the same text.
@@ -55,18 +55,18 @@ function donutSlicePath(startAngle: number, endAngle: number) {
 }
 
 /**
- * "Investment allocation by package type — AUREX Core vs. AUREX
+ * "Investment allocation by package type - AUREX Core vs. AUREX
  * Ventures, as a share of total amount invested." Two categories, so
  * per the dataviz skill's own guidance the default form would be a
  * proportion bar (same as the two SegmentedBar charts elsewhere on this
- * page), not a pie — requested as a pie chart specifically here, so
+ * page), not a pie - requested as a pie chart specifically here, so
  * this is a donut (a pie chart's own inner-radius variant).
  *
- * Per feedback: no in-chart/paragraph text at all — the card's own
+ * Per feedback: no in-chart/paragraph text at all - the card's own
  * heading is left to say what this is, so both the center-hole label
  * (total/hovered figure) and the card's description paragraph (in
  * OverviewView) are dropped. The legend sits below the donut, one line
- * per slice (dot, label, percent only — the GHS figure moved to a
+ * per slice (dot, label, percent only - the GHS figure moved to a
  * `title` tooltip rather than sitting in the row) so both entries stay
  * short enough to sit side by side even in this card's own narrower
  * grid column, rather than wrapping to a vertical stack. Same fixed-
@@ -92,7 +92,7 @@ export default function PackagePieChart({ allocation }: { allocation: PackageAll
       return acc;
     }, []);
 
-  // With nothing invested yet, `drawn` above comes back empty — an
+  // With nothing invested yet, `drawn` above comes back empty - an
   // invisible donut (no <path>s at all) and an equally empty legend row,
   // which reads as broken, not "zero". Same reasoning as TrendChart's own
   // `data.length === 0` fallback right beside this card.

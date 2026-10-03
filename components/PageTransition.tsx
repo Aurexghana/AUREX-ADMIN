@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { routeTransition } from "@/lib/motion";
 
 /**
- * Imported 1:1 from the main AUREX site's components/PageTransition.tsx —
+ * Imported 1:1 from the main AUREX site's components/PageTransition.tsx -
  * not one of the four files explicitly named in the Step 0 brief, but
  * brought in alongside lib/motion.ts since it's that file's own consumer
  * for "page transitions on navigation" (an explicit animation requirement

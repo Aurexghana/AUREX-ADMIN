@@ -4,7 +4,7 @@ import { useSyncExternalStore } from "react";
 
 export type Theme = "dark" | "light";
 
-// Own namespaced key, separate from the main site's "aurex-theme" — a
+// Own namespaced key, separate from the main site's "aurex-theme" - a
 // different key isn't strictly required (this app runs on its own
 // origin, so its localStorage is already isolated from the main site's),
 // but keeps each app's stored preference clearly labeled if anyone ever
@@ -13,7 +13,7 @@ const STORAGE_KEY = "aurex-admin-theme";
 
 /**
  * Imported from the main AUREX site's lib/theme.ts, adopted here as an
- * explicit, scoped exception to this app's own "no localStorage" rule —
+ * explicit, scoped exception to this app's own "no localStorage" rule -
  * a persistent light/dark preference genuinely needs to live outside
  * React state to survive a reload and to avoid a flash of the wrong
  * theme before first paint (see THEME_INIT_SCRIPT below and its use in
@@ -27,7 +27,7 @@ function getSnapshot(): Theme {
 }
 
 // Always "dark" for the server (and the client's very first render,
-// before it can subscribe) — matching the server-rendered markup, since
+// before it can subscribe) - matching the server-rendered markup, since
 // the server has no access to localStorage. The head script above
 // corrects the real DOM attribute before paint; this hook then picks
 // that up on the client's first subscription tick.

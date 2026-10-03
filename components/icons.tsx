@@ -1,7 +1,7 @@
 import type { SVGProps } from "react";
 
 /**
- * Small monochrome admin-UI icons — new to this repo (not part of the
+ * Small monochrome admin-UI icons - new to this repo (not part of the
  * imported design-system files from Step 0), since the main site's own
  * icon set (nav arrows, footer socials, FAQ chevron, trend indicators)
  * has no equivalents for admin actions like approve/reject/reorder/menu.

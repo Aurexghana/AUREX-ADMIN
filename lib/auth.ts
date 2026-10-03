@@ -16,7 +16,7 @@ export type Session = {
   user: SessionUser;
 };
 
-// Own namespaced key, same reasoning as lib/theme.ts's STORAGE_KEY — this
+// Own namespaced key, same reasoning as lib/theme.ts's STORAGE_KEY - this
 // app's storage is already isolated on its own origin, but a distinct
 // name keeps it clearly labeled next to "aurex-admin-theme" if anyone
 // inspects storage directly.
@@ -81,7 +81,7 @@ type RegisterAdminResponse = {
 
 /**
  * Real admin session, backed by Aurex-backend's /auth/login and /auth/logout.
- * Only role: "admin" accounts are accepted here — anyone else authenticates
+ * Only role: "admin" accounts are accepted here - anyone else authenticates
  * fine against the backend but has no business in this app, so that's
  * rejected client-side rather than left to silently 403 on every
  * subsequent request.
@@ -106,7 +106,7 @@ export function useSession() {
           body: { sessionId: current.sessionId },
         });
       } catch {
-        // best-effort — still clear local state even if the server call fails
+        // best-effort - still clear local state even if the server call fails
       }
     }
     setSession(null);

@@ -139,13 +139,13 @@ function SlotTable({
                 }`}
               >
                 {showBusinessColumn && (
-                  <td className="px-4 py-3 font-sans text-sm text-cream-dim">{slot.businessName ?? "—"}</td>
+                  <td className="px-4 py-3 font-sans text-sm text-cream-dim">{slot.businessName ?? "-"}</td>
                 )}
                 <td className="px-4 py-3 font-sans text-sm text-cream-dim">
                   {formatGhs(slot.minInvestmentGhs)} · {slot.ratePercentLabel}
                 </td>
                 <td className="px-4 py-3 font-sans text-sm text-cream-dim">
-                  {slot.opensAt ? formatDisplayDate(slot.opensAt) : "—"} – {slot.closesAt ? formatDisplayDate(slot.closesAt) : "—"}
+                  {slot.opensAt ? formatDisplayDate(slot.opensAt) : "-"} – {slot.closesAt ? formatDisplayDate(slot.closesAt) : "-"}
                 </td>
                 <td className="px-4 py-3">
                   <StatusDot label={SLOT_STATUS_LABEL[slot.status]} tone={STATUS_TONE[slot.status]} />
@@ -179,7 +179,7 @@ function SlotTable({
             </div>
             <span className="font-sans text-xs text-cream-dim">
               {formatGhs(slot.minInvestmentGhs)} min · {slot.ratePercentLabel} ·{" "}
-              {slot.opensAt ? formatDisplayDate(slot.opensAt) : "—"} – {slot.closesAt ? formatDisplayDate(slot.closesAt) : "—"}
+              {slot.opensAt ? formatDisplayDate(slot.opensAt) : "-"} – {slot.closesAt ? formatDisplayDate(slot.closesAt) : "-"}
             </span>
           </motion.div>
         ))}

@@ -4,12 +4,12 @@ import { motion, useReducedMotion } from "framer-motion";
 
 /**
  * Imported 1:1 from the main AUREX site's components/AnimatedBackground.tsx
- * — the "Ambient Lighting Effects" backdrop: a soft gold glow, a warm
+ * - the "Ambient Lighting Effects" backdrop: a soft gold glow, a warm
  * highlight bleeding in from the top right, and a dark umber bloom bleeding
  * in from the bottom left, over a faint full-bleed gradient overlay.
  *
  * Per the admin brief, this is NOT mounted in the root layout the way the
- * main site mounts it behind every page — admin list/table screens are
+ * main site mounts it behind every page - admin list/table screens are
  * utility-first and shouldn't carry a decorative animated backdrop. Reserve
  * it for the (not-yet-built) login screen only, and keep it minimal there.
  *
@@ -23,7 +23,7 @@ export default function AnimatedBackground() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      {/* central gold glow — the exact radial-gradient vector Figma exports
+      {/* central gold glow - the exact radial-gradient vector Figma exports
           for this node, reproduced as inline SVG rather than approximated
           with a hand-rolled CSS gradient. Centered on the full page height,
           matching the design's top:50% (the ambient layer spans the whole

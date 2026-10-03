@@ -6,21 +6,21 @@ import { staggerItem } from "@/lib/motion";
 
 /**
  * Shared "nothing here" placeholder for every list view. Every list in
- * this app is mock data today, so it's always populated — but once a
+ * this app is mock data today, so it's always populated - but once a
  * real backend is behind it, two genuinely different situations need
  * this same shell:
  *
  *   1. The list itself is empty (no applications/members/slots/etc.
- *      exist yet) — the section's own nav icon (AdminShell's NAV_LINKS),
+ *      exist yet) - the section's own nav icon (AdminShell's NAV_LINKS),
  *      copy that explains what will show up here and how, and often a
  *      CTA that starts that first record.
  *   2. The list has records, but the current filter/search hides all of
- *      them — SearchIcon, "no results for this filter" copy, and a
+ *      them - SearchIcon, "no results for this filter" copy, and a
  *      "Clear filters" action instead.
  *
  * Each view tells the two apart itself (typically: is the *unfiltered*
  * source array empty, or just the filtered one) and picks the icon/copy/
- * action accordingly — see each view's own call site.
+ * action accordingly - see each view's own call site.
  */
 export default function EmptyState({
   icon: Icon,

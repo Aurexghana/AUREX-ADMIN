@@ -37,9 +37,9 @@ function parseIsoDate(iso: string): { year: number; month: number; day: number }
  * used across the Investment and Slot forms. Per feedback that the
  * dropdown fix should be consistent across the app: a native date
  * input's own calendar popup is the same class of problem as a native
- * <select>'s option list — OS-drawn chrome (Chromium on Windows always
+ * <select>'s option list - OS-drawn chrome (Chromium on Windows always
  * paints its own blue "today"/hover highlight there too) that this
- * app's CSS can't reach — so this reuses Select's exact conventions
+ * app's CSS can't reach - so this reuses Select's exact conventions
  * (trigger button, outside-click/Escape-to-close popup, square panel,
  * gold hover) rather than a different pattern for what is, underneath,
  * the same bug.
@@ -76,7 +76,7 @@ export default function DatePicker({
     const width = Math.min(POPUP_WIDTH_PX, window.innerWidth - VIEWPORT_MARGIN_PX * 2);
     const left = Math.max(VIEWPORT_MARGIN_PX, Math.min(rect.left, window.innerWidth - width - VIEWPORT_MARGIN_PX));
     // Real rendered height once mounted (falls back to an estimate on the
-    // first frame), capped to the viewport — the popup scrolls internally
+    // first frame), capped to the viewport - the popup scrolls internally
     // via max-height below if the window is shorter than the calendar.
     const maxHeight = window.innerHeight - VIEWPORT_MARGIN_PX * 2;
     const height = Math.min(popupRef.current?.offsetHeight ?? POPUP_HEIGHT_PX, maxHeight);

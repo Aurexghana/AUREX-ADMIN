@@ -54,7 +54,7 @@ function Field({ label, value }: { label: string; value: string }) {
 
 /**
  * The Report detail/response screen. Fetches its own data (mirrors
- * ApplicationDetailView.tsx) — `id` is all the parent route needs to pass
+ * ApplicationDetailView.tsx) - `id` is all the parent route needs to pass
  * down. The "related record" is shown as a plain label rather than a
  * clickable link into the investment/listing it names: the backend only
  * snapshots that label as text (see reports.table.ts's own comment), since

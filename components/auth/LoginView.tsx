@@ -30,7 +30,7 @@ export default function LoginView() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Already signed in (e.g. an old /login bookmark) — send straight
+  // Already signed in (e.g. an old /login bookmark) - send straight
   // through instead of showing the form again.
   useEffect(() => {
     if (isAuthenticated) router.replace(next);

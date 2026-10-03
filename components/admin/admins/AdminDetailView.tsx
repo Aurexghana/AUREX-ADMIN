@@ -35,12 +35,12 @@ function Field({ label, value }: { label: string; value: string }) {
 }
 
 /**
- * Full admin profile — super-admin only, both here and server-side
+ * Full admin profile - super-admin only, both here and server-side
  * (GET /admins/:id 403s for a regular admin; AdminsView also never links
  * here for one). A regular admin who navigates in directly gets a plain
  * access-denied message instead of a fetch that quietly 403s.
  *
- * Permissions render read-only — the superadmin-grants-permissions flow
+ * Permissions render read-only - the superadmin-grants-permissions flow
  * this backs is backend-only for now, not editable from here yet.
  */
 export default function AdminDetailView({ id }: { id: string }) {
@@ -115,7 +115,7 @@ export default function AdminDetailView({ id }: { id: string }) {
           <Field label="Nickname" value={admin.nickname} />
           <Field label="Full Name" value={admin.realName} />
           <Field label="Email" value={admin.email} />
-          <Field label="Phone" value={admin.phone || "—"} />
+          <Field label="Phone" value={admin.phone || "-"} />
           <Field label="Verified" value={admin.verified ? "Yes" : "No"} />
           <Field label="Joined" value={formatDisplayDate(admin.createdAt)} />
         </div>
@@ -125,7 +125,7 @@ export default function AdminDetailView({ id }: { id: string }) {
         <h2 className="font-jakarta text-lg font-semibold text-cream">Permissions</h2>
         {admin.isSuperAdmin ? (
           <p className="font-sans text-sm text-cream-dim">
-            Super admins have unrestricted access — individual permissions don&apos;t apply.
+            Super admins have unrestricted access, so individual permissions don&apos;t apply.
           </p>
         ) : admin.permissions.length === 0 ? (
           <p className="font-sans text-sm text-cream-dim">No specific permissions granted yet.</p>

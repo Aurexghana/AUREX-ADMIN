@@ -1,6 +1,6 @@
 /**
  * Tiny display-formatting helpers, same convention as the main AUREX
- * site's own lib/formatters.ts (GHS currency, day-month-year dates) —
+ * site's own lib/formatters.ts (GHS currency, day-month-year dates) -
  * reproduced here since this is a separate repo, not shared code.
  */
 
@@ -31,7 +31,7 @@ export function formatDateTime(iso: string): string {
 
 /**
  * Builds a wa.me deep link from a member's phone-on-file, optionally
- * prefilled with a message — same "hand off to WhatsApp, no real
+ * prefilled with a message - same "hand off to WhatsApp, no real
  * messaging backend" stub as the main site's own investment flow. wa.me
  * wants digits only (no "+", spaces, or dashes), hence the strip.
  */

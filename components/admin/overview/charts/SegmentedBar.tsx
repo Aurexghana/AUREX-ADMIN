@@ -7,27 +7,27 @@ export type BarSegment = {
   label: string;
   value: number;
   /** Tailwind fill class, e.g. "fill-gold-deep" is intentionally NOT used
-   *  here — this is a plain HTML div bar, not SVG, so these are bg-*
+   *  here - this is a plain HTML div bar, not SVG, so these are bg-*
    *  classes. Kept as a prop (not hardcoded) so each caller supplies its
    *  own already-established color per the brief's "don't invent new
-   *  colors" rule — see SegmentedBar's two call sites for which existing
+   *  colors" rule - see SegmentedBar's two call sites for which existing
    *  token/accent each status or track maps to. */
   colorClassName: string;
 };
 
 /**
- * A part-to-whole proportion bar — used for both "Applications by
+ * A part-to-whole proportion bar - used for both "Applications by
  * Status" (a genuine status breakdown: pending/approved/rejected, so it
  * wears this brand's existing status colors, not invented categorical
  * hues) and "Members by Track" (investor vs business owner: since this
  * brand has only one real hue family, that split is drawn as *emphasis*
- * — one accent + one neutral — rather than pretending two invented hues
+ * - one accent + one neutral - rather than pretending two invented hues
  * are a validated categorical pair).
  *
  * A 2px surface gap separates segments (per the dataviz skill's mark
  * spec) rather than a border between them; the whole bar gets a hairline
  * outer border instead, since in light mode none of this brand's accent
- * fills clear the 3:1 mark-contrast floor against a near-white surface —
+ * fills clear the 3:1 mark-contrast floor against a near-white surface -
  * the border keeps the bar's shape legible regardless, and the legend's
  * always-visible counts (not hover-only) are the mandatory secondary
  * encoding that check requires.
@@ -73,7 +73,7 @@ export default function SegmentedBar({ segments, ariaLabel }: { segments: BarSeg
           })}
       </div>
 
-      {/* Legend — always visible, never hover-only, so every value here
+      {/* Legend - always visible, never hover-only, so every value here
           is reachable without the tooltip above. */}
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         {segments.map((segment) => (
