@@ -18,12 +18,15 @@ export default function Modal({
   title,
   description,
   children,
+  panelClassName = "border-gold/20 bg-panel/95",
 }: {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   description?: string;
   children: ReactNode;
+  /** Border/background classes for the panel — defaults to the standard gold-bordered panel. */
+  panelClassName?: string;
 }) {
   useEffect(() => {
     if (!isOpen) return;
@@ -58,7 +61,7 @@ export default function Modal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.2, ease: easing.smooth }}
-            className="relative flex w-full max-w-lg flex-col gap-5 border border-gold/20 bg-panel/95 p-6 backdrop-blur-2xl sm:p-8"
+            className={`relative flex w-full max-w-lg flex-col gap-5 border ${panelClassName} p-6 backdrop-blur-2xl sm:p-8`}
           >
             <button
               type="button"
