@@ -85,7 +85,12 @@ export async function fetchPayouts(filters: PayoutFilters = {}): Promise<PayoutP
     const { data, pagination } = await cached(`payouts:${params.toString()}`, () =>
       apiFetchPaginated<PayoutApiRow>(`/payouts?${params.toString()}`),
     );
-    return { data: data.map(toPayout), page: pagination.page, totalPages: pagination.totalPages, total: pagination.total };
+    return {
+      data: data.map(toPayout),
+      page: pagination.page,
+      totalPages: pagination.totalPages,
+      total: pagination.total,
+    };
   } catch {
     return EMPTY_PAGE;
   }
