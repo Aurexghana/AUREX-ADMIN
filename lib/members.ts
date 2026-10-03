@@ -1,5 +1,5 @@
 /**
- * Registered AUREX members — approved applicants (see lib/applications.ts)
+ * Registered AUREX members - approved applicants (see lib/applications.ts)
  * who now have an active account.
  *
  * A Business Owner member's `businessListingId` points at their listing
@@ -24,7 +24,7 @@ export type Member = {
   country: string;
   joinDate: string;
   status: MemberStatus;
-  /** Business Owners only — see lib/businessListings.ts. */
+  /** Business Owners only - see lib/businessListings.ts. */
   businessListingId?: string;
 };
 
@@ -46,8 +46,8 @@ type MemberApiRow = {
 function toMember(row: MemberApiRow): Member {
   return {
     id: row.id,
-    nickname: row.nickname ?? "—",
-    realName: [row.firstname, row.lastname].filter(Boolean).join(" ") || "—",
+    nickname: row.nickname ?? "-",
+    realName: [row.firstname, row.lastname].filter(Boolean).join(" ") || "-",
     track: row.track,
     email: row.email ?? "",
     phone: row.phone ?? "",

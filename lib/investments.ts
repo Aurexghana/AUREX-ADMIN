@@ -90,7 +90,7 @@ export async function recordInvestment(input: RecordInvestmentInput): Promise<In
   return toInvestmentRecord(data);
 }
 
-// Note: "investments:" as a prefix also covers "investments:stats" —
+// Note: "investments:" as a prefix also covers "investments:stats" -
 // invalidate("investments") above already clears both the list and the
 // stats cached above.
 

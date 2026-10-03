@@ -51,7 +51,7 @@ const PAGE_SIZE = 10;
 
 /**
  * The Application Review Queue list. Filter/sort state lives here (client
- * component) since this is a live, interactive list — `applications` is
+ * component) since this is a live, interactive list - `applications` is
  * plain data passed down from the server page, `initialStatus` seeds the
  * filter from the Overview page's own "Pending Applications" stat link
  * (?status=pending), same query-param-as-stub-filter convention already
@@ -187,7 +187,7 @@ export default function ApplicationsView({ initialStatus = "all" }: { initialSta
         )
       ) : (
         <>
-          {/* lg+: real table. Below lg: stacked cards — a table this
+          {/* lg+: real table. Below lg: stacked cards - a table this
               narrow (5 columns of real content) stops reflowing sensibly
               well before "mobile", so the breakpoint is lg, not sm. */}
           <motion.div variants={staggerItem} className="hidden overflow-x-auto border border-grid-line lg:block">

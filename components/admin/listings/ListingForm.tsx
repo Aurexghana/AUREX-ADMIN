@@ -55,7 +55,7 @@ export default function ListingForm({
         </span>
       </div>
       <p className="font-sans text-xs text-cream-dim">
-        Status and funding goal come from the linked Ventures package — edit those on the Slots page.
+        Status and funding goal come from the linked Ventures package. Edit those on the Slots page.
       </p>
 
       <label className={LABEL_CLASSNAME}>

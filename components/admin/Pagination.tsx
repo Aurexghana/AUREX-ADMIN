@@ -7,7 +7,7 @@ type PaginationProps = {
   className?: string;
 };
 
-/** Windowed page numbers — always shows first/last two and a run around
+/** Windowed page numbers - always shows first/last two and a run around
  *  the current page, collapsing the rest into an ellipsis so this stays
  *  readable even with dozens of pages. */
 function pageNumbers(page: number, totalPages: number): (number | "ellipsis")[] {

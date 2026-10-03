@@ -13,7 +13,7 @@ const INPUT_CLASSNAME =
 const LABEL_CLASSNAME = "flex flex-col gap-1.5";
 const LABEL_TEXT_CLASSNAME = "font-sans text-xs uppercase tracking-wide text-cream-dim";
 
-/** Edits an admin-added business's own fields — not its owner, which is
+/** Edits an admin-added business's own fields - not its owner, which is
  *  set once at creation (lib/businesses.ts#createBusiness) and isn't
  *  reassignable here. */
 export default function AdminBusinessEditForm({

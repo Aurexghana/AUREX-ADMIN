@@ -17,7 +17,7 @@ export async function fetchApprovedBusinesses(): Promise<ApprovedBusiness[]> {
 /**
  * A business, from either of its two possible origins:
  *  - "admin_added": created directly by an admin (Add Business flow
- *    below) — mock/in-memory, no backend endpoint exists for this yet.
+ *    below) - mock/in-memory, no backend endpoint exists for this yet.
  *    Swap getBusinesses()/createBusiness() for real apiFetch calls (like
  *    lib/packages.ts#createPackage) once one does. The owner link uses
  *    the real /members API (lib/members.ts#fetchMembers/inviteInvestor)
@@ -26,7 +26,7 @@ export async function fetchApprovedBusinesses(): Promise<ApprovedBusiness[]> {
  *    has a real, backend-tracked funding listing (lib/businessListings.ts).
  *
  * getAllBusinesses() merges both into this one shape so admins manage
- * every business — self-added or member-owned, listed or not — from a
+ * every business - self-added or member-owned, listed or not - from a
  * single Businesses page instead of two separate ones. Only
  * "application" rows carry a `listing` (and are editable, via the
  * existing lib/businessListings.ts#updateBusinessListing) since only
@@ -38,17 +38,17 @@ export type BusinessSource = "admin_added" | "application";
 export type Business = {
   id: string;
   name: string;
-  /** Free-text category — only set on "admin_added" rows; "application" rows don't carry one. */
+  /** Free-text category - only set on "admin_added" rows; "application" rows don't carry one. */
   category: string;
   description: string;
   ownerType: BusinessOwnerType;
-  /** Set only when ownerType === "member" — the member who owns/invests in this business. */
+  /** Set only when ownerType === "member" - the member who owns/invests in this business. */
   ownerMemberId?: string;
   ownerMemberNickname?: string;
-  /** Set only on "admin_added" rows — "application" rows don't carry a creation date. */
+  /** Set only on "admin_added" rows - "application" rows don't carry a creation date. */
   createdAt?: string;
   source: BusinessSource;
-  /** Set only on "application" rows — the funding/listing side of this business. */
+  /** Set only on "application" rows - the funding/listing side of this business. */
   listing?: BusinessListing;
 };
 
@@ -57,9 +57,9 @@ export type CreateBusinessInput = {
   category: string;
   description: string;
   ownerType: BusinessOwnerType;
-  /** "Existing Member" branch — id of a real registered investor (lib/members.ts#fetchMembers). */
+  /** "Existing Member" branch - id of a real registered investor (lib/members.ts#fetchMembers). */
   ownerMemberId?: string;
-  /** "New Member" branch — invites a new investor (lib/members.ts#inviteInvestor) before creating the business. */
+  /** "New Member" branch - invites a new investor (lib/members.ts#inviteInvestor) before creating the business. */
   newOwner?: { nickname: string; realName: string; email: string; phone: string; country: string };
 };
 
@@ -89,7 +89,7 @@ export async function getAllBusinesses(): Promise<Business[]> {
   return [...BUSINESSES, ...listings.map(fromListing)];
 }
 
-/** Single business for the detail page — checks the admin-added mock
+/** Single business for the detail page - checks the admin-added mock
  *  list first, then falls back to the real business listings (their ids
  *  don't overlap, so order doesn't matter for correctness, just for
  *  which fetch is skipped when possible). */
@@ -104,8 +104,8 @@ export async function getBusinessById(id: string): Promise<Business | undefined>
 export type UpdateAdminBusinessInput = { name: string; category: string; description: string };
 
 /** Edits an admin-added business's own fields (name/category/description
- *  — not its owner, set once at creation). Application-sourced rows
- *  aren't editable here — see lib/businessListings.ts#updateBusinessListing
+ *  - not its owner, set once at creation). Application-sourced rows
+ *  aren't editable here - see lib/businessListings.ts#updateBusinessListing
  *  for those, which the detail page calls directly instead. */
 export function updateAdminBusiness(id: string, input: UpdateAdminBusinessInput): Business | undefined {
   const business = BUSINESSES.find((b) => b.id === id);

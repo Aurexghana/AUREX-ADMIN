@@ -9,11 +9,11 @@ export type SelectOption = { value: string; label: string };
  * A custom-built dropdown, replacing the plain HTML <select> used
  * throughout this admin. Per feedback with a reference screenshot: a
  * native <select>'s own option list is OS-drawn chrome this app can't
- * restyle — Chromium on Windows ignores author CSS on <option> almost
+ * restyle - Chromium on Windows ignores author CSS on <option> almost
  * entirely, always painting its own blue hover highlight, which is
  * exactly the "hovering is blue, it should match our colors" symptom.
  * Matching the reference's tinted hover pill meant building the list
- * ourselves rather than trying to theme the native one — its rounded
+ * ourselves rather than trying to theme the native one - its rounded
  * corners are NOT carried over per feedback, though: this app's panel
  * and option rows stay square, same as its cards/borders everywhere
  * else.

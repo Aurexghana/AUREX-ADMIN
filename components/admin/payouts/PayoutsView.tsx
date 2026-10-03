@@ -46,6 +46,8 @@ const SEASON_STATUS_TONE: Record<Season["status"], BadgeTone> = {
   ended: "neutral",
 };
 
+type PayoutViewMode = "all" | "firstPending";
+
 const PAGE_SIZE = 10;
 
 function displayStatus(payout: Payout): PayoutStatus {
@@ -57,6 +59,21 @@ function amountCellText(payout: Payout): string {
     return `${formatGhs(payout.paidAmountGhs)} of ${formatGhs(payout.amountGhs)} scheduled`;
   }
   return formatGhs(payout.amountGhs);
+}
+
+/** Collapses the list down to each investment's own next-due payout -
+ *  the fix for an investment's full monthly schedule otherwise repeating
+ *  the same member/package row once per installment. */
+function toFirstPendingPerInvestment(rows: Payout[]): Payout[] {
+  const earliestByInvestment = new Map<string, Payout>();
+  for (const payout of rows) {
+    if (payout.status !== "scheduled") continue;
+    const existing = earliestByInvestment.get(payout.investmentId);
+    if (!existing || payout.scheduledDate < existing.scheduledDate) {
+      earliestByInvestment.set(payout.investmentId, payout);
+    }
+  }
+  return [...earliestByInvestment.values()].sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate));
 }
 
 function SeasonForm({
@@ -133,6 +150,12 @@ export default function PayoutsView() {
   const [seasons, setSeasons] = useState<Season[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<PayoutStatus | "all">("all");
+  const [seasonFilter, setSeasonFilter] = useState<string | "all">("all");
+  const [viewMode, setViewMode] = useState<PayoutViewMode>("all");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [packageQuery, setPackageQuery] = useState("");
+  const [memberQuery, setMemberQuery] = useState("");
   const [banner, setBanner] = useState<string | null>(null);
   const [seasonModalOpen, setSeasonModalOpen] = useState(false);
   const [payingPayout, setPayingPayout] = useState<Payout | null>(null);
@@ -156,7 +179,45 @@ export default function PayoutsView() {
     };
   }, [session]);
 
-  const filtered = statusFilter === "all" ? payouts : payouts.filter((p) => displayStatus(p) === statusFilter);
+  const filtered = useMemo(() => {
+    let rows = payouts;
+    if (statusFilter !== "all") rows = rows.filter((p) => displayStatus(p) === statusFilter);
+    if (seasonFilter !== "all") rows = rows.filter((p) => p.seasonId === seasonFilter);
+    if (startDate) rows = rows.filter((p) => p.scheduledDate >= startDate);
+    if (endDate) rows = rows.filter((p) => p.scheduledDate <= endDate);
+    if (packageQuery.trim()) {
+      const q = packageQuery.trim().toLowerCase();
+      rows = rows.filter(
+        (p) => p.packageName.toLowerCase().includes(q) || (p.businessName?.toLowerCase().includes(q) ?? false),
+      );
+    }
+    if (memberQuery.trim()) {
+      const q = memberQuery.trim().toLowerCase();
+      rows = rows.filter((p) => p.nickname.toLowerCase().includes(q));
+    }
+    if (viewMode === "firstPending") rows = toFirstPendingPerInvestment(rows);
+    return rows;
+  }, [payouts, statusFilter, seasonFilter, startDate, endDate, packageQuery, memberQuery, viewMode]);
+
+  const hasActiveFilters =
+    statusFilter !== "all" ||
+    seasonFilter !== "all" ||
+    viewMode !== "all" ||
+    startDate !== "" ||
+    endDate !== "" ||
+    packageQuery.trim() !== "" ||
+    memberQuery.trim() !== "";
+
+  function clearFilters() {
+    setStatusFilter("all");
+    setSeasonFilter("all");
+    setViewMode("all");
+    setStartDate("");
+    setEndDate("");
+    setPackageQuery("");
+    setMemberQuery("");
+    setPage(1);
+  }
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -276,7 +337,7 @@ export default function PayoutsView() {
             <h2 className="font-jakarta text-base font-semibold text-cream">Seasons</h2>
             {seasons.length === 0 ? (
               <p className="font-sans text-sm text-cream-dim">
-                No seasons yet — payouts still generate fine without one, they just won&apos;t be tagged to a season.
+                No seasons yet. Payouts still generate fine without one, they just won&apos;t be tagged to a season.
               </p>
             ) : (
               <div className="flex flex-col gap-2">
@@ -304,25 +365,154 @@ export default function PayoutsView() {
             )}
           </motion.div>
 
-          <motion.div variants={staggerItem} className="flex flex-wrap items-center gap-3">
-            <Select
-              value={statusFilter}
-              onChange={(v) => {
-                setStatusFilter(v as PayoutStatus | "all");
-                setPage(1);
-              }}
-              options={[
-                { value: "all", label: "All Statuses" },
-                { value: "scheduled", label: "Scheduled" },
-                { value: "late", label: "Late" },
-                { value: "paid", label: "Paid" },
-                { value: "missed", label: "Missed" },
-              ]}
-              ariaLabel="Filter by status"
-            />
-            <span className="font-sans text-xs text-cream-dim">
-              {filtered.length} of {payouts.length}
-            </span>
+          <motion.div variants={staggerItem} className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-end gap-3">
+              <label className="flex flex-col gap-1.5">
+                <span className="font-sans text-xs uppercase tracking-wide text-cream-dim">Status</span>
+                <Select
+                  value={statusFilter}
+                  onChange={(v) => {
+                    setStatusFilter(v as PayoutStatus | "all");
+                    setPage(1);
+                  }}
+                  options={[
+                    { value: "all", label: "All Statuses" },
+                    { value: "scheduled", label: "Scheduled" },
+                    { value: "late", label: "Late" },
+                    { value: "paid", label: "Paid" },
+                    { value: "missed", label: "Missed" },
+                  ]}
+                  ariaLabel="Filter by status"
+                />
+              </label>
+
+              {seasons.length > 0 && (
+                <label className="flex flex-col gap-1.5">
+                  <span className="font-sans text-xs uppercase tracking-wide text-cream-dim">Season</span>
+                  <Select
+                    value={seasonFilter}
+                    onChange={(v) => {
+                      setSeasonFilter(v);
+                      setPage(1);
+                    }}
+                    options={[{ value: "all", label: "All Seasons" }, ...seasons.map((s) => ({ value: s.id, label: s.name }))]}
+                    ariaLabel="Filter by season"
+                  />
+                </label>
+              )}
+
+              <label className="flex flex-col gap-1.5">
+                <span className="font-sans text-xs uppercase tracking-wide text-cream-dim">Show</span>
+                <Select
+                  value={viewMode}
+                  onChange={(v) => {
+                    setViewMode(v as PayoutViewMode);
+                    setPage(1);
+                  }}
+                  options={[
+                    { value: "all", label: "All Payouts" },
+                    { value: "firstPending", label: "First Pending Payout Only" },
+                  ]}
+                  ariaLabel="Filter view mode"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-sans text-xs uppercase tracking-wide text-cream-dim">Start Date</span>
+                  {startDate && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setStartDate("");
+                        setPage(1);
+                      }}
+                      className="font-sans text-[10px] text-cream-dim underline-offset-2 hover:text-cream hover:underline"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <DatePicker
+                  value={startDate}
+                  onChange={(v) => {
+                    setStartDate(v);
+                    setPage(1);
+                  }}
+                  ariaLabel="Filter by start date"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-sans text-xs uppercase tracking-wide text-cream-dim">End Date</span>
+                  {endDate && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEndDate("");
+                        setPage(1);
+                      }}
+                      className="font-sans text-[10px] text-cream-dim underline-offset-2 hover:text-cream hover:underline"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <DatePicker
+                  value={endDate}
+                  onChange={(v) => {
+                    setEndDate(v);
+                    setPage(1);
+                  }}
+                  ariaLabel="Filter by end date"
+                />
+              </label>
+            </div>
+
+            <div className="flex flex-wrap items-end gap-3">
+              <label className="flex flex-col gap-1.5">
+                <span className="font-sans text-xs uppercase tracking-wide text-cream-dim">Package</span>
+                <input
+                  type="text"
+                  value={packageQuery}
+                  onChange={(e) => {
+                    setPackageQuery(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder="e.g. spoty"
+                  className="w-44 border border-grid-line bg-panel/60 px-3 py-2 font-sans text-sm text-cream placeholder:text-cream-dim/50 focus:border-gold/50 focus:outline-none"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1.5">
+                <span className="font-sans text-xs uppercase tracking-wide text-cream-dim">Member</span>
+                <input
+                  type="text"
+                  value={memberQuery}
+                  onChange={(e) => {
+                    setMemberQuery(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder="e.g. gaa"
+                  className="w-44 border border-grid-line bg-panel/60 px-3 py-2 font-sans text-sm text-cream placeholder:text-cream-dim/50 focus:border-gold/50 focus:outline-none"
+                />
+              </label>
+
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="border border-grid-line px-3 py-2 font-jakarta text-xs font-medium text-cream-dim transition-colors hover:text-cream"
+                >
+                  Clear Filters
+                </button>
+              )}
+
+              <span className="font-sans text-xs text-cream-dim">
+                {filtered.length} of {payouts.length}
+              </span>
+            </div>
           </motion.div>
 
           {filtered.length === 0 ? (
@@ -416,7 +606,7 @@ export default function PayoutsView() {
         isOpen={payingPayout !== null}
         onClose={() => setPayingPayout(null)}
         title="Record Payout Payment"
-        description="Defaults to the scheduled amount — lower it if the business could only pay part of it this round."
+        description="Defaults to the scheduled amount. Lower it if the business could only pay part of it this round."
       >
         <div className="flex flex-col gap-4">
           {payingPayout && (

@@ -9,6 +9,6 @@
     <line x1="60" y1="220" x2="200" y2="220" />
   </g>
   <text x="240" y="270" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#d0c5af">
-    Mock document preview — no real file in this dev environment
+    Mock document preview - no real file in this dev environment
   </text>
 </svg>

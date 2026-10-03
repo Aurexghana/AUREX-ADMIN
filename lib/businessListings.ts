@@ -52,7 +52,7 @@ function toBusinessListing(row: ListingApiRow): BusinessListing {
   return {
     id: row.id,
     businessName: row.business_name,
-    ownerNickname: row.owner_nickname ?? "—",
+    ownerNickname: row.owner_nickname ?? "-",
     description: row.description ?? "",
     fundingPurpose: row.funding_purpose ?? "",
     fundingGoalGhs: row.funding_goal ? Number(row.funding_goal) : 0,

@@ -6,18 +6,18 @@ import { easing } from "@/lib/motion";
 import { AlertIcon, SpinnerIcon } from "@/components/icons";
 
 /**
- * A centered "are you sure" dialog — per feedback with a reference
+ * A centered "are you sure" dialog - per feedback with a reference
  * screenshot (a "Delete File" confirm card): every consequential admin
  * action should ask before it fires, not only the ones that destroy
  * data outright. Used for approve/reject, suspend/reactivate, publish/
- * close-early, and remove — see each view's own call site for why that
+ * close-early, and remove - see each view's own call site for why that
  * one action qualifies as "important" here.
  *
  * Deliberately its own small centered layout (icon, title, description,
  * Cancel + action) rather than the general-purpose Modal's left-aligned
- * form chrome — this is a yes/no decision, not a place for more fields.
+ * form chrome - this is a yes/no decision, not a place for more fields.
  * Square corners throughout, same as this app's cards/borders and its
- * own Select dropdown — the reference's rounded card/icon badge aren't
+ * own Select dropdown - the reference's rounded card/icon badge aren't
  * carried over, consistent with every other "take the design, not the
  * rounding" ask so far.
  */

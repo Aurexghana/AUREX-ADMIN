@@ -3,13 +3,13 @@
 /* Design tokens imported 1:1 from the main AUREX site (see that repo's
    app/globals.css) so both apps share one palette/font system. The
    `light:` variant and [data-theme="light"] block below are both live
-   here too — lib/theme.ts + components/ThemeToggle.tsx (also imported
+   here too - lib/theme.ts + components/ThemeToggle.tsx (also imported
    from the main site) toggle the same [data-theme] attribute this custom
    variant keys off. */
 @custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
 
 :root {
-  /* AUREX brand palette — sourced 1:1 from the Figma design tokens.
+  /* AUREX brand palette - sourced 1:1 from the Figma design tokens.
      `--amainblack` keeps the exact variable name used in the design file. */
   --amainblack: #1a1a1a;
 
@@ -20,14 +20,14 @@
   --color-ink-light: #241f18;
   --color-panel: #16130b;
   --color-umber: #3a3433;
-  /* Neutral grid-line gray introduced in this revision — used only for the
+  /* Neutral grid-line gray introduced in this revision - used only for the
      section-divider borders (About/Packages/Testimonials/CTA), never mixed
      with the gold-bordered glass cards. */
   --color-grid-line: #262626;
 
   /* Sampled directly from the actual logo artwork (public/brand/logo-mark
      .png's icon, across its highlight-to-shadow gradient) rather than
-     picked by eye — per feedback that the previous values (#d4af37 etc.)
+     picked by eye - per feedback that the previous values (#d4af37 etc.)
      read as too bright/yellow to be "gold". These sit a little further
      toward amber/bronze: slightly less green, slightly more blue, so the
      same roles (base/light/bright/deep/muted) now track the logo's own
@@ -48,7 +48,7 @@
 
   /* Without this, the browser has no idea this page is dark by default and
      renders native form-control chrome (most visibly: a <select>'s own
-     option-list popup) using its own light-UI default — light/white popup
+     option-list popup) using its own light-UI default - light/white popup
      background under our light `text-cream` option text, which reads as
      "invisible" (very low contrast) rather than just off-brand. This makes
      every native popup (selects, plus scrollbars/etc.) use dark system
@@ -56,17 +56,17 @@
   color-scheme: dark;
 }
 
-/* Light theme — per Figma node 37:2570. Only the tokens that are meant to
+/* Light theme - per Figma node 37:2570. Only the tokens that are meant to
    flip page-wide are redefined here: the page background, card surfaces,
    section-divider borders, and body/heading text. Everything else is left
    alone on purpose:
    - --amainblack, --color-gold, --color-gold-light, --color-gold-deep,
      and --color-umber are theme-neutral brand accents already tuned to
      work on both light and dark surfaces (borders, button/badge fills,
-     gradients — all backed by dark text or enough surrounding chrome
+     gradients - all backed by dark text or enough surrounding chrome
      that they don't need a light-mode-specific value), same as the main
      AUREX site's own copy of this file.
-   - --color-ink-light and --color-graphite are deliberately NOT flipped —
+   - --color-ink-light and --color-graphite are deliberately NOT flipped -
      they back the few surfaces the source design keeps dark even in light
      mode (the Hero "vault" visual, its stat overlays, the CTA info box),
      matching Figma rather than inverting them too.
@@ -79,8 +79,8 @@
    uses as flat text/stroke color with nothing else backing them (stat
    tile values, badges, TrendChart's line, PackagePieChart's Core slice),
    and the dark-mode values there read as too pale to see on this
-   surface. #b8860e — same fix, same value, as the main site's own
-   globals.css — is a richer, still-recognizably-gold amber (~3.25:1 on
+   surface. #b8860e - same fix, same value, as the main site's own
+   globals.css - is a richer, still-recognizably-gold amber (~3.25:1 on
    white) that fixes those specific spots without touching the brighter
    gold used for borders/buttons/gradients. */
 [data-theme="light"] {
@@ -159,7 +159,7 @@ html {
 }
 
 /* Hides the scrollbar on an otherwise-scrollable element (e.g. the
-   testimonials mobile carousel) without disabling scrolling itself —
+   testimonials mobile carousel) without disabling scrolling itself -
    Tailwind v4 has no built-in utility for this. */
 .no-scrollbar {
   scrollbar-width: none;

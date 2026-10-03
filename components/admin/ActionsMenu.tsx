@@ -26,7 +26,7 @@ const VIEWPORT_MARGIN_PX = 8;
 
 /**
  * Row actions collapsed behind a 3-dot trigger, replacing a row of loose
- * buttons — per feedback, once a row's actions grow past one or two, they
+ * buttons - per feedback, once a row's actions grow past one or two, they
  * read better tucked behind a menu than laid out inline. Same click-
  * outside/Escape-to-close and "build our own, don't fight native chrome"
  * approach as Select.tsx; square panel + rows to match this app's own
@@ -34,14 +34,14 @@ const VIEWPORT_MARGIN_PX = 8;
  *
  * Rendered through a portal at document.body with `position: fixed`
  * coordinates computed from the trigger button, rather than an
- * `absolute` child of it — per feedback, the Investment Slots table's
+ * `absolute` child of it - per feedback, the Investment Slots table's
  * own `overflow-x-auto` wrapper (which the browser also computes an
  * overflow-y: auto for, being a mixed-overflow box) was clipping the
  * open menu against the table's own bounds instead of letting it float
  * over the page. Portaling escapes that ancestor's overflow entirely.
  *
  * Position is recomputed every animation frame while open, not just
- * once on open/scroll/resize — per feedback, a menu opened while its
+ * once on open/scroll/resize - per feedback, a menu opened while its
  * own row was still mid-transition (the page's entrance stagger, a row
  * still animating in after the status filter changes, a banner above
  * the table pushing rows down) went stale a frame later and drifted out

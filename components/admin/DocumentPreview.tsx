@@ -127,7 +127,7 @@ export default function DocumentPreview({
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={url}
-                      alt={`${label} — ${fileName}`}
+                      alt={`${label}: ${fileName}`}
                       onLoad={() => setLoaded(true)}
                       className={
                         !loaded
@@ -165,7 +165,7 @@ export default function DocumentPreview({
                   {!loaded && <FileSkeleton tall />}
                   <iframe
                     src={url}
-                    title={`${label} — ${fileName}`}
+                    title={`${label}: ${fileName}`}
                     onLoad={() => setLoaded(true)}
                     className={`h-[65vh] w-full border border-grid-line bg-white ${!loaded ? "hidden" : ""}`}
                   />

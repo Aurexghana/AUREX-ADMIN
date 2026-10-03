@@ -32,7 +32,7 @@ type NavLink = {
   href: string;
   icon: (props: import("react").SVGProps<SVGSVGElement>) => React.ReactElement;
   /** Which live count (see NAV_BADGE_COUNTS below) this link's badge
-   *  shows, if any — a key, not a boolean: two links both wanting a
+   *  shows, if any - a key, not a boolean: two links both wanting a
    *  badge need two different numbers, not one shared `pendingCount`
    *  variable slapped on whichever link happens to ask for one. */
   badgeKey?: "pendingApplications" | "openReports";
@@ -57,7 +57,7 @@ function isActive(pathname: string, href: string) {
 
 /**
  * Swapped in below `md` (phone-width screens) instead of the real shell
- * — see AdminShell's own doc comment for why. Deliberately minimal: no
+ * - see AdminShell's own doc comment for why. Deliberately minimal: no
  * nav, no actions, nothing for a phone user to reach for, just the brand
  * mark and a plain explanation of what to do instead.
  */
@@ -77,7 +77,7 @@ function UnsupportedViewport() {
 
 /**
  * The admin app shell: one fixed left sidebar, same at every viewport
- * width — no more separate "collapses to a top bar + hamburger dropdown
+ * width - no more separate "collapses to a top bar + hamburger dropdown
  * below `lg`" pattern. That pattern (still how the main site's own
  * Navbar.tsx behaves) existed here to cope with a full-width sidebar
  * having nowhere to go on narrow screens; now that the sidebar collapses
@@ -88,19 +88,19 @@ function UnsupportedViewport() {
  *
  * That toggle is a small circular button pinned to the sidebar's own
  * right border (`<aside>` is already `sticky`-positioned, so it's the
- * anchor for free) rather than living inline in the header row — per
+ * anchor for free) rather than living inline in the header row - per
  * feedback with a reference screenshot. Sitting on the border means one
  * fixed spot regardless of collapsed state, and it frees the header back
  * up to just the logo instead of needing to reflow into a column to make
  * room for a second element once collapsed.
  *
  * The collapse toggle's state lives in lib/sidebarState.ts, not a plain
- * useState here — per feedback, it needs to stay collapsed across a route
+ * useState here - per feedback, it needs to stay collapsed across a route
  * change. Still not synced to localStorage, so a real page reload starts
- * expanded — the ask was "survives navigating", not "survives a reload".
+ * expanded - the ask was "survives navigating", not "survives a reload".
  *
  * Deliberately no AnimatedBackground here (see that component's own
- * comment) — this shell wraps every list/table-heavy admin screen.
+ * comment) - this shell wraps every list/table-heavy admin screen.
  *
  * The footer identity + Log out button now read from lib/auth.ts's
  * stubbed session (see AuthGate, which is what actually keeps a signed-
@@ -108,14 +108,14 @@ function UnsupportedViewport() {
  * being static stand-ins. Log out itself goes through the same shared
  * ConfirmDialog every other consequential admin action uses (approve/
  * reject, publish/close-early, delete) rather than firing immediately on
- * click — a stray click here would otherwise drop whatever the admin was
+ * click - a stray click here would otherwise drop whatever the admin was
  * in the middle of doing.
  *
  * Below `md` (phone-width screens), this shell doesn't render its
- * children at all — it swaps in `UnsupportedViewport` instead. Per
+ * children at all - it swaps in `UnsupportedViewport` instead. Per
  * feedback: unlike the main AUREX site, this admin manages live
  * investment slots, funds, and member accounts, and its list→detail
- * flows and multi-field forms genuinely don't fit safely on a phone —
+ * flows and multi-field forms genuinely don't fit safely on a phone -
  * so rather than keep shrinking every screen down to a phone-width
  * card reflow, the floor is tablet-and-up, with a clear message below
  * it instead of a half-usable layout. `md:hidden`/`hidden md:flex` (CSS
@@ -162,7 +162,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             collapsed ? "w-[76px]" : "w-64"
           }`}
         >
-          {/* Floating edge toggle — half on/half off the sidebar's own
+          {/* Floating edge toggle - half on/half off the sidebar's own
               right border, same spot regardless of collapsed state,
               rather than a button competing for space inside the header
               row (which also used to force that row into a column layout

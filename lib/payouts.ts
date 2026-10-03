@@ -35,7 +35,7 @@ function toPayout(row: PayoutApiRow): Payout {
   return {
     id: row.id,
     investmentId: row.investment_id,
-    nickname: row.nickname ?? "—",
+    nickname: row.nickname ?? "-",
     packageName: row.package_name,
     businessName: row.business_name ?? undefined,
     amountGhs: Number(row.amount),
@@ -47,16 +47,47 @@ function toPayout(row: PayoutApiRow): Payout {
   };
 }
 
-export async function fetchPayouts(filters: { status?: PayoutStatus } = {}): Promise<Payout[]> {
-  const params = new URLSearchParams({ limit: "100" });
+export type PayoutFilters = {
+  status?: PayoutStatus;
+  seasonId?: string;
+  startDate?: string;
+  endDate?: string;
+  packageQuery?: string;
+  memberQuery?: string;
+  firstPendingOnly?: boolean;
+  page?: number;
+  limit?: number;
+};
+
+export type PayoutPage = {
+  data: Payout[];
+  page: number;
+  totalPages: number;
+  total: number;
+};
+
+const EMPTY_PAGE: PayoutPage = { data: [], page: 1, totalPages: 1, total: 0 };
+
+export async function fetchPayouts(filters: PayoutFilters = {}): Promise<PayoutPage> {
+  const params = new URLSearchParams({
+    page: String(filters.page ?? 1),
+    limit: String(filters.limit ?? 10),
+  });
   if (filters.status) params.set("status", filters.status);
+  if (filters.seasonId) params.set("season_id", filters.seasonId);
+  if (filters.startDate) params.set("start_date", filters.startDate);
+  if (filters.endDate) params.set("end_date", filters.endDate);
+  if (filters.packageQuery) params.set("package", filters.packageQuery);
+  if (filters.memberQuery) params.set("member", filters.memberQuery);
+  if (filters.firstPendingOnly) params.set("first_pending_only", "true");
+
   try {
-    const { data } = await cached(`payouts:${params.toString()}`, () =>
+    const { data, pagination } = await cached(`payouts:${params.toString()}`, () =>
       apiFetchPaginated<PayoutApiRow>(`/payouts?${params.toString()}`),
     );
-    return data.map(toPayout);
+    return { data: data.map(toPayout), page: pagination.page, totalPages: pagination.totalPages, total: pagination.total };
   } catch {
-    return [];
+    return EMPTY_PAGE;
   }
 }
 

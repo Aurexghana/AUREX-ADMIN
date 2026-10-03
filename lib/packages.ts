@@ -11,10 +11,10 @@ export const SLOT_PACKAGE_LABEL: Record<SlotPackage, string> = {
   ventures: "AUREX Ventures",
 };
 
-// `approved` here means "approved but not yet published" — the admin's own
+// `approved` here means "approved but not yet published" - the admin's own
 // pre-publish state, same concept the old mock called "draft". `pending`/
 // `rejected` aren't reachable from today's admin-only Create flow (every
-// package an admin creates lands `approved` immediately) — they're wired
+// package an admin creates lands `approved` immediately) - they're wired
 // for a future flow where a business proposes a package for admin review.
 export const SLOT_STATUS_LABEL: Record<SlotStatus, string> = {
   pending: "Pending Review",

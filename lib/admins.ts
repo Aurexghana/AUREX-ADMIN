@@ -2,7 +2,7 @@
  * Admin-role accounts, including ones still awaiting approval from
  * `/auth/register-admin` (see RegisterView's own "an existing admin will
  * need to approve your account" copy). Backed by Aurex-backend's
- * dedicated `/admins` endpoints — list is admin-only, everything else
+ * dedicated `/admins` endpoints - list is admin-only, everything else
  * (full profile, approve, reject) is super-admin-only, enforced
  * server-side, so a regular admin's requests to those routes 403.
  */
@@ -61,7 +61,7 @@ type AdminDetailApiRow = {
 };
 
 function realNameOf(firstname: string | null, lastname: string | null): string {
-  return [firstname, lastname].filter(Boolean).join(" ") || "—";
+  return [firstname, lastname].filter(Boolean).join(" ") || "-";
 }
 
 function toAdmin(row: AdminListApiRow): Admin {
@@ -118,7 +118,7 @@ export async function getPendingAdminCount(): Promise<number> {
   }
 }
 
-/** Super-admin only — 403s for a regular admin, so callers should only
+/** Super-admin only - 403s for a regular admin, so callers should only
  *  reach for this behind a `session.user.isSuperAdmin` check. */
 export async function fetchAdminById(id: string): Promise<AdminDetail | undefined> {
   try {

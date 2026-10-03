@@ -10,7 +10,7 @@ import { isValidPassword, MIN_PASSWORD_LENGTH } from "@/lib/validation";
 import { LockIcon, EyeIcon, EyeOffIcon, SpinnerIcon, CheckIcon, ArrowLeftIcon } from "@/components/icons";
 
 /**
- * Reached from ForgotPasswordView's mocked "check your email" screen —
+ * Reached from ForgotPasswordView's mocked "check your email" screen -
  * there's no token/link to verify here (no backend, see lib/auth.ts),
  * so this is honestly just "pick a new password, then go sign in with
  * it" rather than pretending to validate a reset token it doesn't have.

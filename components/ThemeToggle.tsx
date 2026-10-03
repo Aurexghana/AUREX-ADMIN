@@ -27,11 +27,11 @@ function MoonIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 /**
- * Imported from the main AUREX site's components/ThemeToggle.tsx — same
+ * Imported from the main AUREX site's components/ThemeToggle.tsx - same
  * fixed bottom-right floating control, same data-theme mechanism (see
  * lib/theme.ts). Rendered once in the root layout (app/layout.tsx),
  * outside the (admin) route group's own shell, so it stays available on
- * every screen including a future login page — same "available
+ * every screen including a future login page - same "available
  * everywhere" reasoning as the main site's own copy.
  *
  * No `light:` overrides needed here or anywhere else in this app: every

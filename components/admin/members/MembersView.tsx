@@ -73,7 +73,7 @@ export default function MembersView() {
   async function handleAddInvestor(input: NewInvestorInput) {
     try {
       await inviteInvestor(input);
-      setBanner(`Invitation sent to ${input.nickname} — they'll appear here once they activate their account.`);
+      setBanner(`Invitation sent to ${input.nickname}. They'll appear here once they activate their account.`);
     } catch (err) {
       setBanner(
         err instanceof ApiError ? `Couldn't invite this investor: ${err.message}` : "Something went wrong sending this invitation.",

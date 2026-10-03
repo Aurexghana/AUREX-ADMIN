@@ -153,7 +153,7 @@ export default function InvestmentsView() {
                     <tbody>
                       {paginatedRecords.map((record) => (
                         <motion.tr key={record.id} {...hoverLift} className="border-b border-grid-line last:border-b-0 hover:bg-panel/30">
-                          <td className="px-4 py-3 font-jakarta text-sm font-medium text-cream">{membersById[record.memberId]?.nickname ?? "—"}</td>
+                          <td className="px-4 py-3 font-jakarta text-sm font-medium text-cream">{membersById[record.memberId]?.nickname ?? "-"}</td>
                           <td className="px-4 py-3 font-sans text-sm text-cream-dim">
                             {record.businessName ?? record.packageName}
                           </td>
@@ -182,7 +182,7 @@ export default function InvestmentsView() {
                   {paginatedRecords.map((record) => (
                     <motion.div key={record.id} {...hoverLift} className="flex flex-col gap-2 border border-grid-line bg-panel/20 p-4">
                       <div className="flex items-start justify-between gap-3">
-                        <span className="font-jakarta text-sm font-semibold text-cream">{membersById[record.memberId]?.nickname ?? "—"}</span>
+                        <span className="font-jakarta text-sm font-semibold text-cream">{membersById[record.memberId]?.nickname ?? "-"}</span>
                         <span className="font-jakarta text-sm font-semibold text-gold-bright">{formatGhs(record.amountInvestedGhs)}</span>
                       </div>
                       <span className="font-sans text-sm text-cream-dim">

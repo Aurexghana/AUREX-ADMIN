@@ -4,21 +4,21 @@ import Image from "next/image";
 import { useTheme } from "@/lib/theme";
 
 // The full "AUREX" lockup (icon + wordmark baked into one image, from
-// Figma), one export per theme — moved here (out of AdminShell, its
+// Figma), one export per theme - moved here (out of AdminShell, its
 // original and, until now, only caller) so the auth pages can share the
 // exact same logo without duplicating this const or its reasoning.
 //
 // Exported at 4x (272x192 / 272x204, not the design frame's own native
 // 68x48 / 68x51) since the frame's own size rendered blurry once scaled
-// to fill actual device pixels on any HiDPI screen — Next's <Image>
+// to fill actual device pixels on any HiDPI screen - Next's <Image>
 // never upscales past a source's real resolution, so a too-small source
 // just gets stretched by the browser instead. Each export carries its
 // own natural pixel size (they aren't identical aspect ratios) so the
 // <Image> below can be given real width/height and scaled by CSS height
 // alone, undistorted.
 //
-// `unoptimized` — the source PNGs' own background was removed (see
-// public/brand/ — Figma exported these with a flat white/near-black
+// `unoptimized` - the source PNGs' own background was removed (see
+// public/brand/ - Figma exported these with a flat white/near-black
 // backing, not real transparency) by feathering alpha out to a
 // transparent edge; Next's built-in image optimizer re-encodes PNGs
 // through a palette/quantized pipeline that collapses that feathered
@@ -33,7 +33,7 @@ const LOGO = {
 
 /**
  * Swaps the logo lockup itself per theme rather than reusing one
- * icon-only mark in both — same reasoning as the main site's own
+ * icon-only mark in both - same reasoning as the main site's own
  * BrandMark: a mark tuned for one background reads wrong (or vanishes)
  * against the other once the theme toggle is switched.
  */

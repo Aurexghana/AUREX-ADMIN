@@ -175,7 +175,7 @@ export default function BusinessForm({
             onChange={(v) => set("ownerMemberId", v)}
             options={[
               { value: "", label: "Select a member" },
-              ...members.map((m) => ({ value: m.id, label: `${m.nickname} — ${m.realName}` })),
+              ...members.map((m) => ({ value: m.id, label: `${m.nickname} (${m.realName})` })),
             ]}
           />
         </label>

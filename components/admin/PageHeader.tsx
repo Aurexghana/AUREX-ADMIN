@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { staggerItem } from "@/lib/motion";
 
 /**
- * Consistent title band for every admin page — title + optional
+ * Consistent title band for every admin page - title + optional
  * description + an optional right-aligned action slot (e.g. "Create
  * Slot", "Add Block"). Wrapped in `staggerItem` so it participates in
  * whatever `staggerContainer` the page wraps it in, same stagger-in

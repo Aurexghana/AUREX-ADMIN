@@ -135,7 +135,7 @@ export default function TestimonialsSection() {
               <div className="flex flex-col gap-1.5">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-jakarta text-sm font-semibold text-cream">
-                    {testimonial.authorInitials} — {testimonial.authorTitle}
+                    {testimonial.authorInitials}, {testimonial.authorTitle}
                   </span>
                   <StatusBadge
                     label={testimonial.state === "published" ? "Published" : "Draft"}

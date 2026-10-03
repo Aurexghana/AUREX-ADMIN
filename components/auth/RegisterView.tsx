@@ -28,7 +28,7 @@ export default function RegisterView() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
-  // Already signed in — send straight through instead of showing the
+  // Already signed in - send straight through instead of showing the
   // form again.
   useEffect(() => {
     if (isAuthenticated) router.replace("/");

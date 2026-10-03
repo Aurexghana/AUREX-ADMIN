@@ -133,7 +133,7 @@ export default function SlotForm({
 
       {values.package === "ventures" && (
         <label className={LABEL_CLASSNAME}>
-          <span className={LABEL_TEXT_CLASSNAME}>Funding Goal (GHS) — shown on the business&apos;s public listing</span>
+          <span className={LABEL_TEXT_CLASSNAME}>Funding Goal (GHS), shown on the business&apos;s public listing</span>
           <input
             type="number"
             min={0}
