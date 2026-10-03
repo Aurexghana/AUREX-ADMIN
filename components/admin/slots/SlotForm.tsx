@@ -66,6 +66,7 @@ export default function SlotForm({
   const [values, setValues] = useState<SlotFormValues>(() => toFormValues(slot));
   const [pendingAction, setPendingAction] = useState<"draft" | "publish" | null>(null);
   const isPending = pendingAction !== null;
+  const canPublish = !slot || slot.status === "approved";
 
   function set<K extends keyof SlotFormValues>(key: K, value: SlotFormValues[K]) {
     setValues((v) => ({ ...v, [key]: value }));
@@ -211,7 +212,12 @@ export default function SlotForm({
         </label>
         <label className={LABEL_CLASSNAME}>
           <span className={LABEL_TEXT_CLASSNAME}>Closes</span>
-          <DatePicker value={values.closesAt} onChange={(v) => set("closesAt", v)} ariaLabel="Closes on" />
+          <DatePicker
+            value={values.closesAt}
+            onChange={(v) => set("closesAt", v)}
+            ariaLabel="Closes on"
+            min={new Date().toISOString().slice(0, 10)}
+          />
         </label>
       </div>
 
@@ -232,16 +238,24 @@ export default function SlotForm({
           disabled={isPending}
           className="border border-gold/30 px-4 py-2 font-jakarta text-sm font-medium text-gold-bright transition-colors hover:border-gold hover:bg-gold/5 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {pendingAction === "draft" ? <SpinnerIcon className="mx-auto size-4 animate-spin" /> : "Save as Draft"}
+          {pendingAction === "draft" ? (
+            <SpinnerIcon className="mx-auto size-4 animate-spin" />
+          ) : canPublish ? (
+            "Save as Draft"
+          ) : (
+            "Save Changes"
+          )}
         </button>
-        <button
-          type="button"
-          onClick={handlePublish}
-          disabled={isPending}
-          className="bg-gradient-to-r from-gold via-gold-light via-50% to-gold px-4 py-2 font-jakarta text-sm font-medium text-amainblack disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {pendingAction === "publish" ? <SpinnerIcon className="mx-auto size-4 animate-spin" /> : "Publish"}
-        </button>
+        {canPublish && (
+          <button
+            type="button"
+            onClick={handlePublish}
+            disabled={isPending}
+            className="bg-gradient-to-r from-gold via-gold-light via-50% to-gold px-4 py-2 font-jakarta text-sm font-medium text-amainblack disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {pendingAction === "publish" ? <SpinnerIcon className="mx-auto size-4 animate-spin" /> : "Publish"}
+          </button>
+        )}
       </div>
     </form>
   );
