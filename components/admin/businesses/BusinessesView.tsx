@@ -18,8 +18,9 @@ import BusinessForm from "@/components/admin/businesses/BusinessForm";
 import { BriefcaseIcon, PlusIcon, SearchIcon, SpinnerIcon } from "@/components/icons";
 import { getAllBusinesses, createBusiness, type Business, type CreateBusinessInput } from "@/lib/businesses";
 import { LISTING_STATUS_LABEL, getFundingPercent, type ListingStatus } from "@/lib/businessListings";
-import { getMembers } from "@/lib/members";
+import { fetchMembers, type Member } from "@/lib/members";
 import { useSession } from "@/lib/auth";
+import { ApiError } from "@/lib/api/client";
 
 const PAGE_SIZE = 10;
 
@@ -57,6 +58,7 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
   const router = useRouter();
   const { session } = useSession();
   const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>(initialStatus);
@@ -68,20 +70,16 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
     let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
-    getAllBusinesses().then((rows) => {
+    Promise.all([getAllBusinesses(), fetchMembers({ track: "investor" })]).then(([rows, investorRows]) => {
       if (cancelled) return;
       setBusinesses(rows);
+      setMembers(investorRows);
       setIsLoading(false);
     });
     return () => {
       cancelled = true;
     };
   }, [session]);
-
-  // getMembers() returns the live, mutated-in-place MEMBERS array — no
-  // memoization needed, this always reflects members created by this
-  // view's own "New Member" branch.
-  const members = getMembers();
 
   const filtered = useMemo(
     () => businesses.filter((b) => statusFilter === "all" || statusOf(b).filterValue === statusFilter),
@@ -91,12 +89,17 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
   const paginated = useMemo(() => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), [filtered, page]);
 
   async function handleCreate(input: CreateBusinessInput) {
-    const created = createBusiness(input);
-    setBusinesses((prev) => [created, ...prev]);
-    setStatusFilter("all");
-    setPage(1);
-    setBanner(`“${created.name}” added, owned by ${ownerLabel(created)}.`);
-    setIsModalOpen(false);
+    try {
+      const created = await createBusiness(input);
+      setBusinesses((prev) => [created, ...prev]);
+      setStatusFilter("all");
+      setPage(1);
+      setBanner(`“${created.name}” added, owned by ${ownerLabel(created)}.`);
+    } catch (err) {
+      setBanner(err instanceof ApiError ? `Couldn't add this business: ${err.message}` : "Something went wrong adding this business.");
+    } finally {
+      setIsModalOpen(false);
+    }
   }
 
   return (

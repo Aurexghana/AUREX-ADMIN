@@ -10,7 +10,7 @@ import EmptyState from "@/components/admin/EmptyState";
 import Pagination from "@/components/admin/Pagination";
 import InvestmentForm, { type InvestmentFormValues } from "@/components/admin/investments/InvestmentForm";
 import { CoinsIcon, SpinnerIcon } from "@/components/icons";
-import { SLOT_PACKAGE_LABEL, fetchAdminPackages, type InvestmentSlot } from "@/lib/packages";
+import { fetchAdminPackages, type InvestmentSlot } from "@/lib/packages";
 import { fetchMembers, type Member } from "@/lib/members";
 import { fetchInvestments, recordInvestment, updateEarnings, type InvestmentRecord } from "@/lib/investments";
 import { ApiError } from "@/lib/api/client";
@@ -155,7 +155,7 @@ export default function InvestmentsView() {
                         <motion.tr key={record.id} {...hoverLift} className="border-b border-grid-line last:border-b-0 hover:bg-panel/30">
                           <td className="px-4 py-3 font-jakarta text-sm font-medium text-cream">{membersById[record.memberId]?.nickname ?? "—"}</td>
                           <td className="px-4 py-3 font-sans text-sm text-cream-dim">
-                            {record.businessName ?? SLOT_PACKAGE_LABEL[record.slotPackage]}
+                            {record.businessName ?? record.packageName}
                           </td>
                           <td className="px-4 py-3 font-jakarta text-sm font-semibold text-gold-bright">{formatGhs(record.amountInvestedGhs)}</td>
                           <td className="px-4 py-3 font-sans text-sm text-cream-dim">{formatDisplayDate(record.dateInvested)}</td>
@@ -186,7 +186,7 @@ export default function InvestmentsView() {
                         <span className="font-jakarta text-sm font-semibold text-gold-bright">{formatGhs(record.amountInvestedGhs)}</span>
                       </div>
                       <span className="font-sans text-sm text-cream-dim">
-                        {record.businessName ?? SLOT_PACKAGE_LABEL[record.slotPackage]} · {formatDisplayDate(record.dateInvested)}
+                        {record.businessName ?? record.packageName} · {formatDisplayDate(record.dateInvested)}
                       </span>
                       <span className="font-sans text-xs text-cream-dim">
                         Earnings to date: {formatGhs(record.earningsToDateGhs)} (as of {formatDisplayDate(record.lastEarningsUpdate)})

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { ArrowRightIcon, CalendarIcon } from "@/components/icons";
 import { formatDisplayDate } from "@/lib/formatters";
 
@@ -9,6 +10,10 @@ const MONTH_LABELS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
 ];
+
+const POPUP_WIDTH_PX = 256; // w-64
+const POPUP_HEIGHT_PX = 300; // header + weekday row + up to 6 week rows + padding
+const VIEWPORT_MARGIN_PX = 8;
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -50,15 +55,60 @@ export default function DatePicker({
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState<{ top: number; left: number; width: number } | null>(null);
   const selected = parseIsoDate(value);
   const today = new Date();
   const [viewYear, setViewYear] = useState(selected?.year ?? today.getFullYear());
   const [viewMonth, setViewMonth] = useState(selected?.month ?? today.getMonth());
 
+  // Portaled to document.body with viewport-clamped fixed coordinates, so
+  // the popup can't be cut off by (or stretch the scroll area of) the
+  // modal it's opened from, and stays on-screen at narrow widths. Flips
+  // above the trigger when there's no room below. Recomputed every frame
+  // while open because the modal is still animating in when this opens.
+  const reposition = () => {
+    const trigger = rootRef.current;
+    if (!trigger) return;
+    const rect = trigger.getBoundingClientRect();
+    const width = Math.min(POPUP_WIDTH_PX, window.innerWidth - VIEWPORT_MARGIN_PX * 2);
+    const left = Math.max(VIEWPORT_MARGIN_PX, Math.min(rect.left, window.innerWidth - width - VIEWPORT_MARGIN_PX));
+    // Real rendered height once mounted (falls back to an estimate on the
+    // first frame), capped to the viewport — the popup scrolls internally
+    // via max-height below if the window is shorter than the calendar.
+    const maxHeight = window.innerHeight - VIEWPORT_MARGIN_PX * 2;
+    const height = Math.min(popupRef.current?.offsetHeight ?? POPUP_HEIGHT_PX, maxHeight);
+    const spaceBelow = window.innerHeight - VIEWPORT_MARGIN_PX - (rect.bottom + 8);
+    const spaceAbove = rect.top - 8 - VIEWPORT_MARGIN_PX;
+    let top: number;
+    if (height <= spaceBelow) top = rect.bottom + 8;
+    else if (height <= spaceAbove) top = rect.top - 8 - height;
+    else top = window.innerHeight - VIEWPORT_MARGIN_PX - height; // neither side fits: pin to the bottom edge, fully visible
+    setPosition((prev) =>
+      prev && prev.top === top && prev.left === left && prev.width === width ? prev : { top, left, width },
+    );
+  };
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    reposition();
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    let frame = requestAnimationFrame(function tick() {
+      reposition();
+      frame = requestAnimationFrame(tick);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     function handlePointerDown(e: PointerEvent) {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+      const target = e.target as Node;
+      if (rootRef.current?.contains(target) || popupRef.current?.contains(target)) return;
+      setOpen(false);
     }
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -109,11 +159,15 @@ export default function DatePicker({
         <CalendarIcon className="size-3.5 shrink-0 text-cream-dim" />
       </button>
 
-      {open && (
+      {open &&
+        position &&
+        createPortal(
         <div
+          ref={popupRef}
           role="dialog"
           aria-label={ariaLabel}
-          className="absolute left-0 top-full z-20 mt-2 w-64 border border-gold/20 bg-panel p-3 shadow-lg"
+          style={{ position: "fixed", top: position.top, left: position.left, width: position.width }}
+          className="z-[110] max-h-[calc(100vh-1rem)] overflow-y-auto border border-gold/20 bg-panel p-3 shadow-lg"
         >
           <div className="mb-2 flex items-center justify-between gap-2">
             <button
@@ -165,7 +219,8 @@ export default function DatePicker({
               );
             })}
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

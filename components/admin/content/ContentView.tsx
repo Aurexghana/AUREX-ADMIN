@@ -93,7 +93,7 @@ export default function ContentView() {
     >
       <PageHeader
         title="Home Page Content"
-        description="Announcement blocks — publishing here is real, but the public site doesn't render them yet."
+        description="Announcement blocks"
         action={
           <motion.button
             {...hoverScale}
@@ -123,7 +123,7 @@ export default function ContentView() {
         <EmptyState
           icon={MegaphoneIcon}
           title="No content blocks yet"
-          description="Add a block below. Note: the public site doesn't display these yet — this is admin-side persistence only."
+          description="Add a block below."
           action={
             <button
               type="button"
