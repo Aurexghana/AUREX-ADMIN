@@ -212,7 +212,12 @@ export default function SlotForm({
         </label>
         <label className={LABEL_CLASSNAME}>
           <span className={LABEL_TEXT_CLASSNAME}>Closes</span>
-          <DatePicker value={values.closesAt} onChange={(v) => set("closesAt", v)} ariaLabel="Closes on" />
+          <DatePicker
+            value={values.closesAt}
+            onChange={(v) => set("closesAt", v)}
+            ariaLabel="Closes on"
+            min={new Date().toISOString().slice(0, 10)}
+          />
         </label>
       </div>
 

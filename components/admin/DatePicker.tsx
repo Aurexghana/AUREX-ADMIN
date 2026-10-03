@@ -48,10 +48,12 @@ export default function DatePicker({
   value,
   onChange,
   ariaLabel,
+  min,
 }: {
   value: string;
   onChange: (value: string) => void;
   ariaLabel?: string;
+  min?: string;
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -201,18 +203,23 @@ export default function DatePicker({
             ))}
             {cells.map((day, i) => {
               if (day === null) return <span key={`blank-${i}`} />;
+              const iso = toIsoDate(viewYear, viewMonth, day);
               const isSelected = selected?.year === viewYear && selected?.month === viewMonth && selected?.day === day;
+              const isDisabled = min !== undefined && iso < min;
               return (
                 <button
                   key={day}
                   type="button"
+                  disabled={isDisabled}
                   onClick={() => {
-                    onChange(toIsoDate(viewYear, viewMonth, day));
+                    onChange(iso);
                     setOpen(false);
                   }}
-                  className={`py-1.5 font-sans text-xs transition-colors hover:bg-gold/10 hover:text-gold-bright ${
-                    isSelected ? "bg-gold/15 text-gold-bright" : "text-cream"
-                  }`}
+                  className={`py-1.5 font-sans text-xs transition-colors ${
+                    isDisabled
+                      ? "cursor-not-allowed text-cream-dim/30"
+                      : "hover:bg-gold/10 hover:text-gold-bright"
+                  } ${isSelected ? "bg-gold/15 text-gold-bright" : !isDisabled ? "text-cream" : ""}`}
                 >
                   {day}
                 </button>
