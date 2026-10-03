@@ -120,6 +120,7 @@ function SlotTable({
         <table className="w-full border-collapse text-left">
           <thead>
             <tr className="border-b border-grid-line bg-panel/40">
+              <th className="px-4 py-3 font-sans text-xs font-medium uppercase tracking-wide text-cream-dim">Name</th>
               {showBusinessColumn && (
                 <th className="px-4 py-3 font-sans text-xs font-medium uppercase tracking-wide text-cream-dim">Business</th>
               )}
@@ -138,6 +139,7 @@ function SlotTable({
                   slot.status === "closed" ? DANGER_ROW_CLASSNAME : ""
                 }`}
               >
+                <td className="px-4 py-3 font-sans text-sm font-medium text-cream">{slot.name}</td>
                 {showBusinessColumn && (
                   <td className="px-4 py-3 font-sans text-sm text-cream-dim">{slot.businessName ?? "-"}</td>
                 )}
@@ -169,9 +171,12 @@ function SlotTable({
             }`}
           >
             <div className="flex items-start justify-between gap-3">
-              <span className="font-jakarta text-sm font-semibold text-cream">
-                {slot.businessName ?? slot.name}
-              </span>
+              <div className="flex flex-col">
+                <span className="font-jakarta text-sm font-semibold text-cream">{slot.name}</span>
+                {slot.businessName && (
+                  <span className="font-sans text-xs text-cream-dim">{slot.businessName}</span>
+                )}
+              </div>
               <div className="flex items-center gap-2">
                 <StatusDot label={SLOT_STATUS_LABEL[slot.status]} tone={STATUS_TONE[slot.status]} />
                 <ActionsMenu label={`${slot.name} slot actions`} items={actionItems(slot)} />
