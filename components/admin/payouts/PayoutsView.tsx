@@ -153,6 +153,9 @@ export default function PayoutsView() {
   const [totalCount, setTotalCount] = useState(0);
   const [seasonsLoaded, setSeasonsLoaded] = useState(false);
 
+  const isViewLocked = statusFilter !== "all" && statusFilter !== "scheduled";
+  const effectiveViewMode: PayoutViewMode = isViewLocked ? "all" : viewMode;
+
   useEffect(() => {
     if (!session) return;
     fetchSeasons().then((rows) => {
@@ -189,7 +192,7 @@ export default function PayoutsView() {
       endDate: endDate || undefined,
       packageQuery: debouncedPackageQuery || undefined,
       memberQuery: debouncedMemberQuery || undefined,
-      firstPendingOnly: viewMode === "firstPending",
+      firstPendingOnly: effectiveViewMode === "firstPending",
       page: targetPage,
       limit: PAGE_SIZE,
     });
@@ -221,12 +224,12 @@ export default function PayoutsView() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, statusFilter, seasonFilter, viewMode, startDate, endDate, debouncedPackageQuery, debouncedMemberQuery, page]);
+  }, [session, statusFilter, seasonFilter, effectiveViewMode, startDate, endDate, debouncedPackageQuery, debouncedMemberQuery, page]);
 
   const hasActiveFilters =
     statusFilter !== "scheduled" ||
     seasonFilter !== "all" ||
-    viewMode !== "firstPending" ||
+    effectiveViewMode !== "firstPending" ||
     startDate !== "" ||
     endDate !== "" ||
     packageQuery.trim() !== "" ||
@@ -416,7 +419,8 @@ export default function PayoutsView() {
           <label className="flex flex-col gap-1.5">
             <span className="font-sans text-xs uppercase tracking-wide text-cream-dim">Show</span>
             <Select
-              value={viewMode}
+              value={effectiveViewMode}
+              disabled={isViewLocked}
               onChange={(v) => {
                 setViewMode(v as PayoutViewMode);
                 setPage(1);
