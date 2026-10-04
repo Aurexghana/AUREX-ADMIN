@@ -171,15 +171,15 @@ export default function MembersView() {
               <tbody>
                 {paginated.map((member) => (
                   <motion.tr
-                    key={member.id}
+                    key={`${member.id}-${member.track}`}
                     {...hoverLift}
-                    onClick={handleRowClick(router, `/members/${member.id}`)}
+                    onClick={handleRowClick(router, `/members/${member.id}?track=${member.track}`)}
                     className={`cursor-pointer border-b border-grid-line last:border-b-0 hover:bg-panel/30 ${
                       member.status === "suspended" ? DANGER_ROW_CLASSNAME : ""
                     }`}
                   >
                     <td className="p-0">
-                      <Link href={`/members/${member.id}`} className="flex items-center gap-3 px-4 py-3">
+                      <Link href={`/members/${member.id}?track=${member.track}`} className="flex items-center gap-3 px-4 py-3">
                         <span className={AVATAR_CLASSNAME}>{member.nickname.slice(0, 2).toUpperCase()}</span>
                         <span className="font-jakarta text-sm font-medium text-cream">{member.nickname}</span>
                       </Link>
@@ -200,7 +200,7 @@ export default function MembersView() {
             {paginated.map((member) => (
               <motion.div key={`filtered-${member.id}`} {...hoverLift}>
                 <Link
-                  href={`/members/${member.id}`}
+                  href={`/members/${member.id}?track=${member.track}`}
                   className={`flex flex-col gap-2 border border-grid-line bg-panel/20 p-4 ${
                     member.status === "suspended" ? DANGER_ROW_CLASSNAME : ""
                   }`}
