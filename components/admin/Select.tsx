@@ -24,12 +24,14 @@ export default function Select({
   options,
   ariaLabel,
   triggerClassName = "",
+  disabled = false,
 }: {
   value: string;
   onChange: (value: string) => void;
   options: SelectOption[];
   ariaLabel?: string;
   triggerClassName?: string;
+  disabled?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -56,10 +58,11 @@ export default function Select({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
+        disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={ariaLabel}
-        className={`flex w-full items-center justify-between gap-2 border border-grid-line bg-panel/60 px-3 py-2 font-sans text-sm text-cream transition-colors focus:border-gold/50 focus:outline-none ${triggerClassName}`}
+        className={`flex w-full items-center justify-between gap-2 border border-grid-line bg-panel/60 px-3 py-2 font-sans text-sm text-cream transition-colors focus:border-gold/50 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 ${triggerClassName}`}
       >
         <span className="truncate">{selected?.label ?? ""}</span>
         <ChevronDownIcon className={`size-2.5 shrink-0 text-cream-dim transition-transform ${open ? "rotate-180" : ""}`} />

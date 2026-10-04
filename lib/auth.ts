@@ -90,7 +90,7 @@ export function useSession() {
   const session = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   async function login(email: string, password: string): Promise<void> {
-    const { data } = await apiFetch<LoginResponse>("/auth/login", { method: "POST", body: { email, password } });
+    const { data } = await apiFetch<LoginResponse>("/auth/login", { method: "POST", body: { email, password, role: "admin" } });
     if (data.user.role !== "admin") {
       throw new ApiError("This account doesn't have admin access.", 403);
     }

@@ -10,7 +10,7 @@ import StatusBadge, { type BadgeTone } from "@/components/admin/StatusBadge";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import { ArrowRightIcon, SpinnerIcon } from "@/components/icons";
 import { useSession } from "@/lib/auth";
-import { fetchMemberById, type Member, type MemberStatus } from "@/lib/members";
+import { fetchMemberById, type Member, type MemberStatus, type MemberTrack } from "@/lib/members";
 import { fetchInvestments, type InvestmentRecord } from "@/lib/investments";
 import {
   fetchBusinessListings,
@@ -41,7 +41,7 @@ function slotLabel(record: InvestmentRecord) {
   return record.businessName ?? record.packageName;
 }
 
-export default function MemberDetailView({ id }: { id: string }) {
+export default function MemberDetailView({ id, track }: { id: string; track?: MemberTrack }) {
   const { session } = useSession();
   const [member, setMember] = useState<Member | null>(null);
   const [investmentRecords, setInvestmentRecords] = useState<InvestmentRecord[]>([]);
@@ -56,7 +56,7 @@ export default function MemberDetailView({ id }: { id: string }) {
     let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
-    fetchMemberById(id).then((result) => {
+    fetchMemberById(id, track).then((result) => {
       if (cancelled) return;
       setMember(result ?? null);
       setStatus(result?.status ?? "active");
@@ -74,7 +74,7 @@ export default function MemberDetailView({ id }: { id: string }) {
     return () => {
       cancelled = true;
     };
-  }, [session, id]);
+  }, [session, id, track]);
 
   const totalInvested = investmentRecords.reduce((sum, r) => sum + r.amountInvestedGhs, 0);
 

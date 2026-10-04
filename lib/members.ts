@@ -82,9 +82,10 @@ export async function getMemberCounts(): Promise<{ investorCount: number; busine
   }
 }
 
-export async function fetchMemberById(id: string): Promise<Member | undefined> {
+export async function fetchMemberById(id: string, track?: MemberTrack): Promise<Member | undefined> {
   try {
-    const { data } = await apiFetch<MemberApiRow>(`/members/${id}`);
+    const query = track ? `?track=${track}` : "";
+    const { data } = await apiFetch<MemberApiRow>(`/members/${id}${query}`);
     return toMember(data);
   } catch {
     return undefined;
