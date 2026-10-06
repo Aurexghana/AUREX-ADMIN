@@ -5,7 +5,7 @@ import { hoverScale } from "@/lib/motion";
 import { motion } from "framer-motion";
 import { SpinnerIcon } from "@/components/icons";
 import Select from "@/components/admin/Select";
-import { CATEGORY_OPTIONS } from "@/components/admin/businesses/BusinessForm";
+import { CATEGORY_OPTIONS } from "@/lib/businesses";
 import type { Business, UpdateAdminBusinessInput } from "@/lib/businesses";
 
 const INPUT_CLASSNAME =

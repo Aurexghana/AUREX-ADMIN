@@ -16,12 +16,6 @@ import MemberForm from "@/components/admin/members/MemberForm";
 import { AVATAR_CLASSNAME, DANGER_ROW_CLASSNAME, handleRowClick } from "@/components/admin/tableStyles";
 import BulkImportModal from "@/components/admin/BulkImportModal";
 import { PlusIcon, SearchIcon, SpinnerIcon, UploadIcon, UsersIcon } from "@/components/icons";
-import {
-  INVESTOR_COLUMN_HELP,
-  INVESTOR_REQUIRED_HEADERS,
-  INVESTOR_TEMPLATE_ROWS,
-  parseInvestorRow,
-} from "@/lib/bulkImportConfigs";
 import { useSession } from "@/lib/auth";
 import { ApiError } from "@/lib/api/client";
 import { fetchMembers, inviteInvestor, type Member, type MemberStatus, type MemberTrack, type NewInvestorInput } from "@/lib/members";
@@ -254,21 +248,22 @@ export default function MembersView() {
         <MemberForm onSubmit={handleAddInvestor} />
       </Modal>
 
-      <BulkImportModal<NewInvestorInput>
+      <BulkImportModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
         title="Import Investors"
-        description="Invites many investors at once from a CSV file."
+        description="Adds many investors at once from an Excel file. Each one is verified and emailed a link to set their password."
         noun="investor"
-        templateFilename="aurex-investors-template.csv"
-        templateRows={INVESTOR_TEMPLATE_ROWS}
-        columnHelp={INVESTOR_COLUMN_HELP}
-        requiredHeaders={INVESTOR_REQUIRED_HEADERS}
-        parseRow={parseInvestorRow}
-        importRow={inviteInvestor}
-        onImported={(count) =>
-          setBanner(`${count} investor${count === 1 ? "" : "s"} invited. They'll appear here once they activate their account.`)
-        }
+        type="investor"
+        columnHelp={[
+          "nickname: 3 to 20 characters",
+          "phone_number: include the country code, e.g. +233241112222",
+          "country: pick from the dropdown",
+        ]}
+        onImported={async (count) => {
+          setMembers(await fetchMembers());
+          setBanner(`${count} investor${count === 1 ? "" : "s"} added. Activation emails are on their way.`);
+        }}
       />
     </motion.div>
   );

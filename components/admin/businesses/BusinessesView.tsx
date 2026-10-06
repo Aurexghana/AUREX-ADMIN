@@ -17,15 +17,8 @@ import { handleRowClick } from "@/components/admin/tableStyles";
 import BusinessForm from "@/components/admin/businesses/BusinessForm";
 import BulkImportModal from "@/components/admin/BulkImportModal";
 import { BriefcaseIcon, PlusIcon, SearchIcon, SpinnerIcon, UploadIcon } from "@/components/icons";
-import {
-  BUSINESS_COLUMN_HELP,
-  BUSINESS_REQUIRED_HEADERS,
-  BUSINESS_TEMPLATE_ROWS,
-  makeBusinessRowParser,
-} from "@/lib/bulkImportConfigs";
 import { getAllBusinesses, createBusiness, type Business, type CreateBusinessInput } from "@/lib/businesses";
 import { LISTING_STATUS_LABEL, getFundingPercent, type ListingStatus } from "@/lib/businessListings";
-import { fetchMembers, type Member } from "@/lib/members";
 import { useSession } from "@/lib/auth";
 import { ApiError } from "@/lib/api/client";
 
@@ -65,7 +58,6 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
   const router = useRouter();
   const { session } = useSession();
   const [businesses, setBusinesses] = useState<Business[]>([]);
-  const [members, setMembers] = useState<Member[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -78,10 +70,9 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
     let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
-    Promise.all([getAllBusinesses(), fetchMembers({ track: "investor" })]).then(([rows, investorRows]) => {
+    getAllBusinesses().then((rows) => {
       if (cancelled) return;
       setBusinesses(rows);
-      setMembers(investorRows);
       setIsLoading(false);
     });
     return () => {
@@ -98,19 +89,17 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
 
   async function handleCreate(input: CreateBusinessInput) {
     try {
-      const created = await createBusiness(input);
-      setBusinesses((prev) => [created, ...prev]);
+      await createBusiness(input);
+      setBusinesses(await getAllBusinesses());
       setStatusFilter("all");
       setPage(1);
-      setBanner(`“${created.name}” added, owned by ${ownerLabel(created)}.`);
+      setBanner(`“${input.name}” added. ${input.owner.nickname} has been emailed a link to set their password.`);
     } catch (err) {
       setBanner(err instanceof ApiError ? `Couldn't add this business: ${err.message}` : "Something went wrong adding this business.");
     } finally {
       setIsModalOpen(false);
     }
   }
-
-  const parseBusinessRow = useMemo(() => makeBusinessRowParser(members), [members]);
 
   async function handleImported(count: number) {
     setBusinesses(await getAllBusinesses());
@@ -299,25 +288,24 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Add Business"
-        description="It can be AUREX's own business, or added on behalf of a member (existing or brand new)."
+        description="Creates the business and its owner, then emails the owner a link to set their password."
       >
-        <BusinessForm members={members} onSubmit={handleCreate} />
+        <BusinessForm onSubmit={handleCreate} />
       </Modal>
 
-      <BulkImportModal<CreateBusinessInput>
+      <BulkImportModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
         title="Import Businesses"
-        description="Adds many businesses at once from a CSV file. Owners can be AUREX, an existing investor, or a new investor to invite."
+        description="Adds many businesses at once from an Excel file. Each owner is verified and emailed a link to set their password."
         noun="business"
-        templateFilename="aurex-businesses-template.csv"
-        templateRows={BUSINESS_TEMPLATE_ROWS}
-        columnHelp={BUSINESS_COLUMN_HELP}
-        requiredHeaders={BUSINESS_REQUIRED_HEADERS}
-        parseRow={parseBusinessRow}
-        importRow={async (input) => {
-          await createBusiness(input);
-        }}
+        type="business"
+        columnHelp={[
+          "funding_amount and country: pick from the dropdown",
+          "business_description is optional",
+          "one business per owner email; nickname is 3 to 20 characters",
+          "phone_number: include the country code, e.g. +233240000000",
+        ]}
         onImported={handleImported}
       />
     </motion.div>

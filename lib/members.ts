@@ -7,8 +7,7 @@
  * status per the brief, rather than duplicating listing fields here).
  */
 
-import { apiFetch, apiFetchPaginated, apiUpload } from "@/lib/api/client";
-import { approveApplication } from "@/lib/applications";
+import { apiFetch, apiFetchPaginated } from "@/lib/api/client";
 import { cached } from "@/lib/cache";
 
 export type MemberTrack = "investor" | "business";
@@ -101,15 +100,15 @@ export type NewInvestorInput = {
 };
 
 export async function inviteInvestor(input: NewInvestorInput): Promise<void> {
-  const formData = new FormData();
-  formData.set("type", "investor");
-  formData.set("full_name", input.realName);
-  formData.set("email", input.email);
-  formData.set("phone_country", input.country.toUpperCase());
-  formData.set("phone_number", input.phone);
-  formData.set("nickname", input.nickname);
-  formData.set("country_of_residence", input.country.toUpperCase());
-
-  const { data } = await apiUpload<{ id: string }>("/applications", formData);
-  await approveApplication(data.id);
+  await apiFetch("/applications/admin", {
+    method: "POST",
+    body: {
+      type: "investor",
+      nickname: input.nickname,
+      full_name: input.realName,
+      email: input.email,
+      phone_number: input.phone,
+      country: input.country,
+    },
+  });
 }
