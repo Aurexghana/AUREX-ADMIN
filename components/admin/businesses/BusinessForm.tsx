@@ -7,89 +7,53 @@ import { SpinnerIcon } from "@/components/icons";
 import Select from "@/components/admin/Select";
 import ComboSelect from "@/components/admin/ComboSelect";
 import { getCountryList } from "@/lib/countries";
-import type { Member } from "@/lib/members";
-import type { CreateBusinessInput } from "@/lib/businesses";
+import { FUNDING_AMOUNT_OPTIONS, type CreateBusinessInput } from "@/lib/businesses";
 
 const INPUT_CLASSNAME =
   "w-full border border-grid-line bg-panel/60 px-3 py-2 font-sans text-sm text-cream placeholder:text-cream-dim/50 focus:border-gold/50 focus:outline-none";
 const LABEL_CLASSNAME = "flex flex-col gap-1.5";
 const LABEL_TEXT_CLASSNAME = "font-sans text-xs uppercase tracking-wide text-cream-dim";
 
-export const CATEGORY_OPTIONS = [
-  { value: "", label: "Select a category" },
-  { value: "Agriculture", label: "Agriculture" },
-  { value: "Logistics", label: "Logistics" },
-  { value: "Retail", label: "Retail" },
-  { value: "Technology", label: "Technology" },
-  { value: "Other", label: "Other" },
-];
-
-type OwnerChoice = "admin" | "existing" | "new";
-
 type BusinessFormValues = {
   name: string;
-  category: string;
   description: string;
-  ownerChoice: OwnerChoice;
-  ownerMemberId: string;
-  newOwnerNickname: string;
-  newOwnerRealName: string;
-  newOwnerEmail: string;
-  newOwnerPhone: string;
-  newOwnerCountry: string;
+  fundingAmount: string;
+  ownerNickname: string;
+  ownerRealName: string;
+  ownerEmail: string;
+  ownerPhone: string;
+  ownerCountry: string;
 };
 
 const EMPTY_VALUES: BusinessFormValues = {
   name: "",
-  category: "",
   description: "",
-  ownerChoice: "admin",
-  ownerMemberId: "",
-  newOwnerNickname: "",
-  newOwnerRealName: "",
-  newOwnerEmail: "",
-  newOwnerPhone: "",
-  newOwnerCountry: "",
+  fundingAmount: "",
+  ownerNickname: "",
+  ownerRealName: "",
+  ownerEmail: "",
+  ownerPhone: "",
+  ownerCountry: "",
 };
 
 function toCreateBusinessInput(values: BusinessFormValues): CreateBusinessInput {
-  if (values.ownerChoice === "existing") {
-    return {
-      name: values.name,
-      category: values.category,
-      description: values.description,
-      ownerType: "member",
-      ownerMemberId: values.ownerMemberId,
-    };
-  }
-  if (values.ownerChoice === "new") {
-    return {
-      name: values.name,
-      category: values.category,
-      description: values.description,
-      ownerType: "member",
-      newOwner: {
-        nickname: values.newOwnerNickname,
-        realName: values.newOwnerRealName,
-        email: values.newOwnerEmail,
-        phone: values.newOwnerPhone,
-        country: values.newOwnerCountry,
-      },
-    };
-  }
   return {
     name: values.name,
-    category: values.category,
     description: values.description,
-    ownerType: "admin",
+    fundingAmount: values.fundingAmount,
+    owner: {
+      nickname: values.ownerNickname,
+      realName: values.ownerRealName,
+      email: values.ownerEmail,
+      phone: values.ownerPhone,
+      country: values.ownerCountry,
+    },
   };
 }
 
 export default function BusinessForm({
-  members,
   onSubmit,
 }: {
-  members: Member[];
   onSubmit: (input: CreateBusinessInput) => void | Promise<void>;
 }) {
   const [values, setValues] = useState<BusinessFormValues>(EMPTY_VALUES);
@@ -100,17 +64,15 @@ export default function BusinessForm({
     setValues((v) => ({ ...v, [key]: value }));
   }
 
-  const hasOwnerDetails =
-    values.ownerChoice === "admin" ||
-    (values.ownerChoice === "existing" && values.ownerMemberId !== "") ||
-    (values.ownerChoice === "new" &&
-      values.newOwnerNickname.length >= 3 &&
-      values.newOwnerRealName !== "" &&
-      values.newOwnerEmail !== "" &&
-      values.newOwnerPhone !== "" &&
-      values.newOwnerCountry !== "");
-
-  const canSubmit = values.name !== "" && values.category !== "" && hasOwnerDetails && !isSubmitting;
+  const canSubmit =
+    values.name !== "" &&
+    values.fundingAmount !== "" &&
+    values.ownerNickname.length >= 3 &&
+    values.ownerRealName !== "" &&
+    values.ownerEmail !== "" &&
+    values.ownerPhone !== "" &&
+    values.ownerCountry !== "" &&
+    !isSubmitting;
 
   return (
     <form
@@ -139,8 +101,12 @@ export default function BusinessForm({
       </label>
 
       <label className={LABEL_CLASSNAME}>
-        <span className={LABEL_TEXT_CLASSNAME}>Category</span>
-        <Select value={values.category} onChange={(v) => set("category", v)} options={CATEGORY_OPTIONS} />
+        <span className={LABEL_TEXT_CLASSNAME}>Funding Amount Sought</span>
+        <Select
+          value={values.fundingAmount}
+          onChange={(v) => set("fundingAmount", v)}
+          options={[{ value: "", label: "Select an amount" }, ...FUNDING_AMOUNT_OPTIONS]}
+        />
       </label>
 
       <label className={LABEL_CLASSNAME}>
@@ -154,90 +120,62 @@ export default function BusinessForm({
         />
       </label>
 
-      <label className={LABEL_CLASSNAME}>
-        <span className={LABEL_TEXT_CLASSNAME}>Owned By</span>
-        <Select
-          value={values.ownerChoice}
-          onChange={(v) => set("ownerChoice", v as OwnerChoice)}
-          options={[
-            { value: "admin", label: "AUREX (Admin)" },
-            { value: "existing", label: "Existing Member" },
-            { value: "new", label: "New Member" },
-          ]}
-        />
-      </label>
-
-      {values.ownerChoice === "existing" && (
+      <div className="grid grid-cols-1 gap-4 border border-grid-line bg-panel/20 p-4 sm:grid-cols-2">
+        <span className={`${LABEL_TEXT_CLASSNAME} sm:col-span-2`}>Business Owner</span>
         <label className={LABEL_CLASSNAME}>
-          <span className={LABEL_TEXT_CLASSNAME}>Member</span>
-          <Select
-            value={values.ownerMemberId}
-            onChange={(v) => set("ownerMemberId", v)}
-            options={[
-              { value: "", label: "Select a member" },
-              ...members.map((m) => ({ value: m.id, label: `${m.nickname} (${m.realName})` })),
-            ]}
+          <span className={LABEL_TEXT_CLASSNAME}>Nickname</span>
+          <input
+            type="text"
+            value={values.ownerNickname}
+            onChange={(e) => set("ownerNickname", e.target.value)}
+            placeholder="e.g. HarvestHQ"
+            minLength={3}
+            maxLength={20}
+            className={INPUT_CLASSNAME}
           />
         </label>
-      )}
-
-      {values.ownerChoice === "new" && (
-        <div className="grid grid-cols-1 gap-4 border border-grid-line bg-panel/20 p-4 sm:grid-cols-2">
-          <label className={LABEL_CLASSNAME}>
-            <span className={LABEL_TEXT_CLASSNAME}>Nickname</span>
-            <input
-              type="text"
-              value={values.newOwnerNickname}
-              onChange={(e) => set("newOwnerNickname", e.target.value)}
-              placeholder="e.g. HarvestHQ"
-              minLength={3}
-              maxLength={20}
-              className={INPUT_CLASSNAME}
-            />
-          </label>
-          <label className={LABEL_CLASSNAME}>
-            <span className={LABEL_TEXT_CLASSNAME}>Real Name</span>
-            <input
-              type="text"
-              value={values.newOwnerRealName}
-              onChange={(e) => set("newOwnerRealName", e.target.value)}
-              placeholder="e.g. Abena Sarpong"
-              className={INPUT_CLASSNAME}
-            />
-          </label>
-          <label className={LABEL_CLASSNAME}>
-            <span className={LABEL_TEXT_CLASSNAME}>Email</span>
-            <input
-              type="email"
-              value={values.newOwnerEmail}
-              onChange={(e) => set("newOwnerEmail", e.target.value)}
-              placeholder="e.g. abena@example.com"
-              className={INPUT_CLASSNAME}
-            />
-          </label>
-          <label className={LABEL_CLASSNAME}>
-            <span className={LABEL_TEXT_CLASSNAME}>Phone</span>
-            <input
-              type="text"
-              value={values.newOwnerPhone}
-              onChange={(e) => set("newOwnerPhone", e.target.value)}
-              placeholder="e.g. +233 24 000 0000"
-              className={INPUT_CLASSNAME}
-            />
-          </label>
-          <label className={`${LABEL_CLASSNAME} sm:col-span-2`}>
-            <span className={LABEL_TEXT_CLASSNAME}>Country</span>
-            <ComboSelect
-              value={values.newOwnerCountry}
-              onChange={(v) => set("newOwnerCountry", v)}
-              options={countryOptions}
-              placeholder="Select a country"
-              searchPlaceholder="Search countries…"
-              ariaLabel="Country"
-            />
-          </label>
-        </div>
-      )}
+        <label className={LABEL_CLASSNAME}>
+          <span className={LABEL_TEXT_CLASSNAME}>Real Name</span>
+          <input
+            type="text"
+            value={values.ownerRealName}
+            onChange={(e) => set("ownerRealName", e.target.value)}
+            placeholder="e.g. Abena Sarpong"
+            className={INPUT_CLASSNAME}
+          />
+        </label>
+        <label className={LABEL_CLASSNAME}>
+          <span className={LABEL_TEXT_CLASSNAME}>Email</span>
+          <input
+            type="email"
+            value={values.ownerEmail}
+            onChange={(e) => set("ownerEmail", e.target.value)}
+            placeholder="e.g. abena@example.com"
+            className={INPUT_CLASSNAME}
+          />
+        </label>
+        <label className={LABEL_CLASSNAME}>
+          <span className={LABEL_TEXT_CLASSNAME}>Phone</span>
+          <input
+            type="text"
+            value={values.ownerPhone}
+            onChange={(e) => set("ownerPhone", e.target.value)}
+            placeholder="e.g. +233 24 000 0000"
+            className={INPUT_CLASSNAME}
+          />
+        </label>
+        <label className={`${LABEL_CLASSNAME} sm:col-span-2`}>
+          <span className={LABEL_TEXT_CLASSNAME}>Country</span>
+          <ComboSelect
+            value={values.ownerCountry}
+            onChange={(v) => set("ownerCountry", v)}
+            options={countryOptions}
+            placeholder="Select a country"
+            searchPlaceholder="Search countries…"
+            ariaLabel="Country"
+          />
+        </label>
+      </div>
 
       <div>
         <motion.button
