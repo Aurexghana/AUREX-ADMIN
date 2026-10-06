@@ -148,7 +148,7 @@ function BulkImportBody({
           ))}
         </ul>
         <div>
-          <button type="button" onClick={handleDownload} disabled={isDownloading} className={SECONDARY_BUTTON_CLASSNAME}>
+          <button type="button" onClick={handleDownload} disabled={isDownloading} className={`${SECONDARY_BUTTON_CLASSNAME} w-[70%]`}>
             {isDownloading ? "Preparing…" : "Download template"}
           </button>
         </div>
