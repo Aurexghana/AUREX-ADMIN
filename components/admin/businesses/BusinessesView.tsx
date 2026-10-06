@@ -15,7 +15,14 @@ import Select from "@/components/admin/Select";
 import { type BadgeTone } from "@/components/admin/StatusBadge";
 import { handleRowClick } from "@/components/admin/tableStyles";
 import BusinessForm from "@/components/admin/businesses/BusinessForm";
-import { BriefcaseIcon, PlusIcon, SearchIcon, SpinnerIcon } from "@/components/icons";
+import BulkImportModal from "@/components/admin/BulkImportModal";
+import { BriefcaseIcon, PlusIcon, SearchIcon, SpinnerIcon, UploadIcon } from "@/components/icons";
+import {
+  BUSINESS_COLUMN_HELP,
+  BUSINESS_REQUIRED_HEADERS,
+  BUSINESS_TEMPLATE_ROWS,
+  makeBusinessRowParser,
+} from "@/lib/bulkImportConfigs";
 import { getAllBusinesses, createBusiness, type Business, type CreateBusinessInput } from "@/lib/businesses";
 import { LISTING_STATUS_LABEL, getFundingPercent, type ListingStatus } from "@/lib/businessListings";
 import { fetchMembers, type Member } from "@/lib/members";
@@ -61,6 +68,7 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
   const [members, setMembers] = useState<Member[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>(initialStatus);
   const [banner, setBanner] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -102,6 +110,15 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
     }
   }
 
+  const parseBusinessRow = useMemo(() => makeBusinessRowParser(members), [members]);
+
+  async function handleImported(count: number) {
+    setBusinesses(await getAllBusinesses());
+    setStatusFilter("all");
+    setPage(1);
+    setBanner(`${count} business${count === 1 ? "" : "es"} imported.`);
+  }
+
   return (
     <motion.div
       variants={staggerContainer}
@@ -113,14 +130,23 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
         title="Businesses"
         description="Every business AUREX knows about: self-added, member-owned, or raising funds as a published listing. Click one to manage it."
         action={
-          <motion.button
-            {...hoverScale}
-            type="button"
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-1.5 bg-gradient-to-r from-gold via-gold-light via-50% to-gold px-4 py-2.5 font-jakarta text-sm font-medium text-amainblack"
-          >
-            <PlusIcon className="size-3.5" /> Add Business
-          </motion.button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsImportModalOpen(true)}
+              className="flex items-center gap-1.5 border border-grid-line px-4 py-2.5 font-jakarta text-sm font-medium text-cream-dim transition-colors hover:text-cream"
+            >
+              <UploadIcon className="size-3.5" /> Import Businesses
+            </button>
+            <motion.button
+              {...hoverScale}
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-1.5 bg-gradient-to-r from-gold via-gold-light via-50% to-gold px-4 py-2.5 font-jakarta text-sm font-medium text-amainblack"
+            >
+              <PlusIcon className="size-3.5" /> Add Business
+            </motion.button>
+          </div>
         }
       />
 
@@ -277,6 +303,23 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
       >
         <BusinessForm members={members} onSubmit={handleCreate} />
       </Modal>
+
+      <BulkImportModal<CreateBusinessInput>
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        title="Import Businesses"
+        description="Adds many businesses at once from a CSV file. Owners can be AUREX, an existing investor, or a new investor to invite."
+        noun="business"
+        templateFilename="aurex-businesses-template.csv"
+        templateRows={BUSINESS_TEMPLATE_ROWS}
+        columnHelp={BUSINESS_COLUMN_HELP}
+        requiredHeaders={BUSINESS_REQUIRED_HEADERS}
+        parseRow={parseBusinessRow}
+        importRow={async (input) => {
+          await createBusiness(input);
+        }}
+        onImported={handleImported}
+      />
     </motion.div>
   );
 }
