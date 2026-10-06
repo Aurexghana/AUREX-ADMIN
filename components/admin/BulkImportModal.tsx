@@ -177,7 +177,11 @@ function BulkImportBody<T>({
               ))}
             </ul>
             <div>
-              <button type="button" onClick={() => downloadCsv(templateFilename, templateRows)} className={SECONDARY_BUTTON_CLASSNAME}>
+              <button
+                type="button"
+                onClick={() => downloadCsv(templateFilename, templateRows)}
+                className={`${SECONDARY_BUTTON_CLASSNAME} w-[70%]`}
+              >
                 Download template
               </button>
             </div>
