@@ -75,3 +75,16 @@ export async function apiUpload<T = unknown>(
   });
   return parse<ApiEnvelope<T>>(res);
 }
+
+export async function apiDownload(
+  path: string,
+  options: { accessToken?: string | null } = {},
+): Promise<Blob> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    cache: "no-store",
+    credentials: "include",
+    headers: { ...authHeaders(options.accessToken) },
+  });
+  if (!res.ok) await parse(res);
+  return res.blob();
+}

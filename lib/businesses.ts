@@ -1,6 +1,5 @@
 import { apiFetch } from "@/lib/api/client";
 import { cached } from "@/lib/cache";
-import { fetchMembers, inviteInvestor } from "@/lib/members";
 import { fetchBusinessListings, type BusinessListing } from "@/lib/businessListings";
 
 export type ApprovedBusiness = { id: string; name: string };
@@ -52,15 +51,27 @@ export type Business = {
   listing?: BusinessListing;
 };
 
+export const CATEGORY_OPTIONS = [
+  { value: "", label: "Select a category" },
+  { value: "Agriculture", label: "Agriculture" },
+  { value: "Logistics", label: "Logistics" },
+  { value: "Retail", label: "Retail" },
+  { value: "Technology", label: "Technology" },
+  { value: "Other", label: "Other" },
+];
+
+export const FUNDING_AMOUNT_OPTIONS = [
+  { value: "under-10000", label: "Under GHS 10,000" },
+  { value: "10000-50000", label: "GHS 10,000 – 50,000" },
+  { value: "50000-200000", label: "GHS 50,000 – 200,000" },
+  { value: "200000-plus", label: "GHS 200,000+" },
+];
+
 export type CreateBusinessInput = {
   name: string;
-  category: string;
   description: string;
-  ownerType: BusinessOwnerType;
-  /** "Existing Member" branch - id of a real registered investor (lib/members.ts#fetchMembers). */
-  ownerMemberId?: string;
-  /** "New Member" branch - invites a new investor (lib/members.ts#inviteInvestor) before creating the business. */
-  newOwner?: { nickname: string; realName: string; email: string; phone: string; country: string };
+  fundingAmount: string;
+  owner: { nickname: string; realName: string; email: string; phone: string; country: string };
 };
 
 const BUSINESSES: Business[] = [];
@@ -114,32 +125,19 @@ export function updateAdminBusiness(id: string, input: UpdateAdminBusinessInput)
   return business;
 }
 
-export async function createBusiness(input: CreateBusinessInput): Promise<Business> {
-  let ownerMemberId: string | undefined;
-  let ownerMemberNickname: string | undefined;
-  if (input.ownerType === "member") {
-    if (input.newOwner) {
-      await inviteInvestor(input.newOwner);
-      ownerMemberNickname = input.newOwner.nickname;
-    } else if (input.ownerMemberId) {
-      const members = await fetchMembers({ track: "investor" });
-      const owner = members.find((m) => m.id === input.ownerMemberId);
-      ownerMemberId = owner?.id;
-      ownerMemberNickname = owner?.nickname;
-    }
-  }
-
-  const business: Business = {
-    id: `biz-${Date.now()}`,
-    name: input.name,
-    category: input.category,
-    description: input.description,
-    ownerType: input.ownerType,
-    ownerMemberId,
-    ownerMemberNickname,
-    createdAt: new Date().toISOString().slice(0, 10),
-    source: "admin_added",
-  };
-  BUSINESSES.push(business);
-  return business;
+export async function createBusiness(input: CreateBusinessInput): Promise<void> {
+  await apiFetch("/applications/admin", {
+    method: "POST",
+    body: {
+      type: "business",
+      business_name: input.name,
+      business_description: input.description,
+      funding_amount: input.fundingAmount,
+      nickname: input.owner.nickname,
+      full_name: input.owner.realName,
+      email: input.owner.email,
+      phone_number: input.owner.phone,
+      country: input.owner.country,
+    },
+  });
 }
