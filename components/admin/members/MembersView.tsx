@@ -14,7 +14,14 @@ import Pagination from "@/components/admin/Pagination";
 import Modal from "@/components/admin/Modal";
 import MemberForm from "@/components/admin/members/MemberForm";
 import { AVATAR_CLASSNAME, DANGER_ROW_CLASSNAME, handleRowClick } from "@/components/admin/tableStyles";
-import { PlusIcon, SearchIcon, SpinnerIcon, UsersIcon } from "@/components/icons";
+import BulkImportModal from "@/components/admin/BulkImportModal";
+import { PlusIcon, SearchIcon, SpinnerIcon, UploadIcon, UsersIcon } from "@/components/icons";
+import {
+  INVESTOR_COLUMN_HELP,
+  INVESTOR_REQUIRED_HEADERS,
+  INVESTOR_TEMPLATE_ROWS,
+  parseInvestorRow,
+} from "@/lib/bulkImportConfigs";
 import { useSession } from "@/lib/auth";
 import { ApiError } from "@/lib/api/client";
 import { fetchMembers, inviteInvestor, type Member, type MemberStatus, type MemberTrack, type NewInvestorInput } from "@/lib/members";
@@ -39,6 +46,7 @@ export default function MembersView() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [banner, setBanner] = useState<string | null>(null);
 
   useEffect(() => {
@@ -94,14 +102,23 @@ export default function MembersView() {
         title="Member Management"
         description="Every registered AUREX member, investor and business owner alike."
         action={
-          <motion.button
-            {...hoverScale}
-            type="button"
-            onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-1.5 bg-gradient-to-r from-gold via-gold-light via-50% to-gold px-4 py-2.5 font-jakarta text-sm font-medium text-amainblack"
-          >
-            <PlusIcon className="size-3.5" /> Add Investor
-          </motion.button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsImportModalOpen(true)}
+              className="flex items-center gap-1.5 border border-grid-line px-4 py-2.5 font-jakarta text-sm font-medium text-cream-dim transition-colors hover:text-cream"
+            >
+              <UploadIcon className="size-3.5" /> Import Investors
+            </button>
+            <motion.button
+              {...hoverScale}
+              type="button"
+              onClick={() => setIsAddModalOpen(true)}
+              className="flex items-center gap-1.5 bg-gradient-to-r from-gold via-gold-light via-50% to-gold px-4 py-2.5 font-jakarta text-sm font-medium text-amainblack"
+            >
+              <PlusIcon className="size-3.5" /> Add Investor
+            </motion.button>
+          </div>
         }
       />
 
@@ -236,6 +253,23 @@ export default function MembersView() {
       >
         <MemberForm onSubmit={handleAddInvestor} />
       </Modal>
+
+      <BulkImportModal<NewInvestorInput>
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        title="Import Investors"
+        description="Invites many investors at once from a CSV file."
+        noun="investor"
+        templateFilename="aurex-investors-template.csv"
+        templateRows={INVESTOR_TEMPLATE_ROWS}
+        columnHelp={INVESTOR_COLUMN_HELP}
+        requiredHeaders={INVESTOR_REQUIRED_HEADERS}
+        parseRow={parseInvestorRow}
+        importRow={inviteInvestor}
+        onImported={(count) =>
+          setBanner(`${count} investor${count === 1 ? "" : "s"} invited. They'll appear here once they activate their account.`)
+        }
+      />
     </motion.div>
   );
 }
