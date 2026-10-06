@@ -62,8 +62,8 @@ export const CATEGORY_OPTIONS = [
 
 export const FUNDING_AMOUNT_OPTIONS = [
   { value: "under-10000", label: "Under GHS 10,000" },
-  { value: "10000-50000", label: "GHS 10,000 – 50,000" },
-  { value: "50000-200000", label: "GHS 50,000 – 200,000" },
+  { value: "10000-50000", label: "GHS 10,000 â€“ 50,000" },
+  { value: "50000-200000", label: "GHS 50,000 â€“ 200,000" },
   { value: "200000-plus", label: "GHS 200,000+" },
 ];
 
