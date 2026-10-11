@@ -6,7 +6,7 @@ export type SiteContact = {
   contactEmail: string;
   facebookUrl: string;
   twitterUrl: string;
-  linkedinUrl: string;
+  tiktokUrl: string;
   updatedAt: string;
 };
 
@@ -25,7 +25,7 @@ function toSiteContact(row: SiteContactApiRow): SiteContact {
     contactEmail: row.contact_email ?? "",
     facebookUrl: row.facebook_url ?? "",
     twitterUrl: row.twitter_url ?? "",
-    linkedinUrl: row.linkedin_url ?? "",
+    tiktokUrl: row.linkedin_url ?? "",
     updatedAt: row.updated_at.slice(0, 10),
   };
 }
@@ -44,7 +44,7 @@ export async function updateSiteContact(input: {
   contactEmail: string;
   facebookUrl: string;
   twitterUrl: string;
-  linkedinUrl: string;
+  tiktokUrl: string;
 }): Promise<SiteContact> {
   const { data } = await apiFetch<SiteContactApiRow>("/site-contact", {
     method: "PATCH",
@@ -53,7 +53,7 @@ export async function updateSiteContact(input: {
       contact_email: input.contactEmail,
       facebook_url: input.facebookUrl,
       twitter_url: input.twitterUrl,
-      linkedin_url: input.linkedinUrl,
+      linkedin_url: input.tiktokUrl,
     },
   });
   invalidate("site-contact");
