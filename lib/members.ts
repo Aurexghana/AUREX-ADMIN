@@ -8,7 +8,7 @@
  */
 
 import { apiFetch, apiFetchPaginated } from "@/lib/api/client";
-import { cached } from "@/lib/cache";
+import { cached, invalidate } from "@/lib/cache";
 
 export type MemberTrack = "investor" | "business";
 export type MemberStatus = "active" | "suspended";
@@ -89,6 +89,11 @@ export async function fetchMemberById(id: string, track?: MemberTrack): Promise<
   } catch {
     return undefined;
   }
+}
+
+export async function updateMemberNickname(id: string, track: MemberTrack, nickname: string): Promise<void> {
+  await apiFetch(`/members/${id}?track=${track}`, { method: "PATCH", body: { nickname } });
+  invalidate("members:");
 }
 
 export type NewInvestorInput = {

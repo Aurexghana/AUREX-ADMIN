@@ -10,7 +10,8 @@ import StatusBadge, { type BadgeTone } from "@/components/admin/StatusBadge";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import { ArrowRightIcon, SpinnerIcon } from "@/components/icons";
 import { useSession } from "@/lib/auth";
-import { fetchMemberById, type Member, type MemberStatus, type MemberTrack } from "@/lib/members";
+import { ApiError } from "@/lib/api/client";
+import { fetchMemberById, updateMemberNickname, type Member, type MemberStatus, type MemberTrack } from "@/lib/members";
 import { fetchInvestments, type InvestmentRecord } from "@/lib/investments";
 import {
   fetchBusinessListings,
@@ -50,6 +51,10 @@ export default function MemberDetailView({ id, track }: { id: string; track?: Me
   const [status, setStatus] = useState<MemberStatus>("active");
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [confirmToggleOpen, setConfirmToggleOpen] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState("");
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [isSavingName, setIsSavingName] = useState(false);
 
   useEffect(() => {
     if (!session) return;
@@ -77,6 +82,31 @@ export default function MemberDetailView({ id, track }: { id: string; track?: Me
   }, [session, id, track]);
 
   const totalInvested = investmentRecords.reduce((sum, r) => sum + r.amountInvestedGhs, 0);
+
+  async function saveNickname() {
+    if (!member) return;
+    const next = nameDraft.trim();
+    if (next.length < 3 || next.length > 20) {
+      setNameError("Must be 3 to 20 characters.");
+      return;
+    }
+    if (next === member.nickname) {
+      setIsEditingName(false);
+      return;
+    }
+    setIsSavingName(true);
+    setNameError(null);
+    try {
+      await updateMemberNickname(member.id, member.track, next);
+      setActionMessage(`Anonymous name changed from ${member.nickname} to ${next}.`);
+      setMember({ ...member, nickname: next });
+      setIsEditingName(false);
+    } catch (err) {
+      setNameError(err instanceof ApiError ? err.message : "Couldn't update the anonymous name.");
+    } finally {
+      setIsSavingName(false);
+    }
+  }
 
   function toggleStatus() {
     if (!member) return;
@@ -128,7 +158,60 @@ export default function MemberDetailView({ id, track }: { id: string; track?: Me
       <motion.section {...scrollReveal} className="flex flex-col gap-5 border border-grid-line bg-panel/20 p-6">
         <h2 className="font-jakarta text-lg font-semibold text-cream">Account Details</h2>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <Field label="Nickname" value={member.nickname} />
+          {isEditingName ? (
+            <form
+              className="flex flex-col gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                saveNickname();
+              }}
+            >
+              <label className="flex flex-col gap-1">
+                <span className="font-sans text-xs uppercase tracking-wide text-cream-dim">Anonymous Name</span>
+                <input
+                  type="text"
+                  value={nameDraft}
+                  onChange={(e) => setNameDraft(e.target.value)}
+                  minLength={3}
+                  maxLength={20}
+                  autoFocus
+                  className="w-full border border-grid-line bg-panel/60 px-3 py-2 font-sans text-sm text-cream focus:border-gold/50 focus:outline-none"
+                />
+              </label>
+              {nameError && <p className="font-sans text-xs text-red-400">{nameError}</p>}
+              <div className="flex items-center gap-2">
+                <button
+                  type="submit"
+                  disabled={isSavingName || nameDraft.trim().length < 3}
+                  className="bg-gradient-to-r from-gold via-gold-light via-50% to-gold px-3 py-1.5 font-jakarta text-xs font-medium text-amainblack disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {isSavingName ? "Saving…" : "Save"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsEditingName(false)}
+                  className="border border-grid-line px-3 py-1.5 font-jakarta text-xs font-medium text-cream-dim transition-colors hover:text-cream"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="flex flex-col gap-1">
+              <Field label="Anonymous Name" value={member.nickname} />
+              <button
+                type="button"
+                onClick={() => {
+                  setNameDraft(member.nickname === "-" ? "" : member.nickname);
+                  setNameError(null);
+                  setIsEditingName(true);
+                }}
+                className="w-fit font-jakarta text-xs font-medium text-gold-bright underline-offset-4 hover:underline"
+              >
+                Edit
+              </button>
+            </div>
+          )}
           <Field label="Full Name" value={member.realName} />
           <Field label="Email" value={member.email} />
           <Field label="Phone" value={member.phone} />

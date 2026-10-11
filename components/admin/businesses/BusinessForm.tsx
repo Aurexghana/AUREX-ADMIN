@@ -123,7 +123,7 @@ export default function BusinessForm({
       <div className="grid grid-cols-1 gap-4 border border-grid-line bg-panel/20 p-4 sm:grid-cols-2">
         <span className={`${LABEL_TEXT_CLASSNAME} sm:col-span-2`}>Business Owner</span>
         <label className={LABEL_CLASSNAME}>
-          <span className={LABEL_TEXT_CLASSNAME}>Nickname</span>
+          <span className={LABEL_TEXT_CLASSNAME}>Anonymous Name</span>
           <input
             type="text"
             value={values.ownerNickname}
