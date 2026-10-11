@@ -131,7 +131,7 @@ export default function MembersView() {
             setQuery(e.target.value);
             setPage(1);
           }}
-          placeholder="Search by nickname or real name…"
+          placeholder="Search by anonymous name or real name…"
           className="w-full border border-grid-line bg-panel/60 py-2 pl-9 pr-3 font-sans text-sm text-cream placeholder:text-cream-dim/60 focus:border-gold/50 focus:outline-none"
         />
       </motion.div>
@@ -154,7 +154,7 @@ export default function MembersView() {
           <EmptyState
             icon={SearchIcon}
             title={`No members match “${query}”`}
-            description="Try a different nickname or real name."
+            description="Try a different anonymous name or real name."
             action={
               <button
                 type="button"
@@ -172,7 +172,7 @@ export default function MembersView() {
             <table className="w-full border-collapse text-left">
               <thead>
                 <tr className="border-b border-grid-line bg-panel/40">
-                  <th className="px-4 py-3 font-sans text-xs font-medium uppercase tracking-wide text-cream-dim">Nickname</th>
+                  <th className="px-4 py-3 font-sans text-xs font-medium uppercase tracking-wide text-cream-dim">Anonymous Name</th>
                   <th className="px-4 py-3 font-sans text-xs font-medium uppercase tracking-wide text-cream-dim">Real Name</th>
                   <th className="px-4 py-3 font-sans text-xs font-medium uppercase tracking-wide text-cream-dim">Track</th>
                   <th className="px-4 py-3 font-sans text-xs font-medium uppercase tracking-wide text-cream-dim">Joined</th>
@@ -256,7 +256,7 @@ export default function MembersView() {
         noun="investor"
         type="investor"
         columnHelp={[
-          "nickname: 3 to 20 characters",
+          "anonymous name: 3 to 20 characters",
           "phone_number: include the country code, e.g. +233241112222",
           "country: pick from the dropdown",
         ]}

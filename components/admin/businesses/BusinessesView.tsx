@@ -303,7 +303,7 @@ export default function BusinessesView({ initialStatus = "all" }: { initialStatu
         columnHelp={[
           "funding_amount and country: pick from the dropdown",
           "business_description is optional",
-          "one business per owner email; nickname is 3 to 20 characters",
+          "one business per owner email; anonymous name is 3 to 20 characters",
           "phone_number: include the country code, e.g. +233240000000",
         ]}
         onImported={handleImported}

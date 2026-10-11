@@ -70,7 +70,7 @@ export default function MemberForm({
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className={LABEL_CLASSNAME}>
-          <span className={LABEL_TEXT_CLASSNAME}>Nickname</span>
+          <span className={LABEL_TEXT_CLASSNAME}>Anonymous Name</span>
           <input
             type="text"
             value={values.nickname}
