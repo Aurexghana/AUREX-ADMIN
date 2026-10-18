@@ -1,7 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { ApiError } from "@/lib/api/client";
+import { resetPassword, validateResetToken } from "@/lib/passwordReset";
 import { motion } from "framer-motion";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthField from "@/components/auth/AuthField";
@@ -10,12 +13,12 @@ import { isValidPassword, MIN_PASSWORD_LENGTH } from "@/lib/validation";
 import { LockIcon, EyeIcon, EyeOffIcon, SpinnerIcon, CheckIcon, ArrowLeftIcon } from "@/components/icons";
 
 /**
- * Reached from ForgotPasswordView's mocked "check your email" screen -
- * there's no token/link to verify here (no backend, see lib/auth.ts),
- * so this is honestly just "pick a new password, then go sign in with
- * it" rather than pretending to validate a reset token it doesn't have.
+ * Reached from the emailed link (/reset-password?token=...). The token is
+ * validated up front so an expired or used link never shows the form.
  */
 export default function ResetPasswordView() {
+  const token = useSearchParams().get("token") ?? "";
+  const [tokenState, setTokenState] = useState<"checking" | "valid" | "invalid">(token ? "checking" : "invalid");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +26,18 @@ export default function ResetPasswordView() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+    validateResetToken(token).then((ok) => {
+      if (!cancelled) setTokenState(ok ? "valid" : "invalid");
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!isValidPassword(password)) {
       setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters and include a number and a symbol.`);
@@ -35,10 +49,51 @@ export default function ResetPasswordView() {
     }
     setError(null);
     setSubmitting(true);
-    window.setTimeout(() => {
-      setSubmitting(false);
+    try {
+      await resetPassword(token, password);
       setDone(true);
-    }, 500);
+    } catch (err) {
+      if (err instanceof ApiError && (err.status === 400 || err.status === 401 || err.status === 404 || err.status === 410)) {
+        setError(err.message);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (tokenState === "checking") {
+    return (
+      <AuthCard title="Checking your link" description="One moment while we verify your reset link.">
+        <div className="flex justify-center py-4 text-gold-bright">
+          <SpinnerIcon className="size-5 animate-spin" />
+        </div>
+      </AuthCard>
+    );
+  }
+
+  if (tokenState === "invalid") {
+    return (
+      <AuthCard
+        title="Link expired or invalid"
+        description="This password reset link can't be used. Request a new one to continue."
+        footer={
+          <Link href="/login" className="inline-flex items-center gap-1.5 text-gold-bright transition-colors hover:text-gold-light">
+            <ArrowLeftIcon className="size-3" /> Back to sign in
+          </Link>
+        }
+      >
+        <Link href="/forgot-password" className="w-full">
+          <motion.span
+            {...hoverScale}
+            className="flex w-full items-center justify-center bg-gradient-to-r from-gold via-gold-light via-50% to-gold px-5 py-2.5 font-jakarta text-sm font-medium text-amainblack"
+          >
+            Request a New Link
+          </motion.span>
+        </Link>
+      </AuthCard>
+    );
   }
 
   if (done) {
