@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthField from "@/components/auth/AuthField";
 import { hoverScale } from "@/lib/motion";
+import { ApiError } from "@/lib/api/client";
+import { requestPasswordReset } from "@/lib/passwordReset";
 import { MailIcon, SpinnerIcon, CheckIcon, ArrowLeftIcon } from "@/components/icons";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,20 +18,13 @@ const BACK_TO_SIGN_IN = (
   </Link>
 );
 
-/**
- * No real email delivery behind this - no backend at all yet, see
- * lib/auth.ts's own comment. Submitting just mocks the "check your
- * inbox" state after a brief delay, same honesty as this app's other
- * stubbed flows (e.g. InvestmentForm's file input, which only ever
- * reads a filename and nothing else).
- */
 export default function ForgotPasswordView() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!EMAIL_PATTERN.test(email)) {
       setError("Enter a valid email address.");
@@ -37,10 +32,14 @@ export default function ForgotPasswordView() {
     }
     setError(null);
     setSubmitting(true);
-    window.setTimeout(() => {
-      setSubmitting(false);
+    try {
+      await requestPasswordReset(email);
       setSent(true);
-    }, 500);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (sent) {
@@ -50,13 +49,7 @@ export default function ForgotPasswordView() {
           <span className="flex size-11 items-center justify-center border border-gold/30 bg-gold/10 text-gold-bright">
             <CheckIcon className="size-5" />
           </span>
-          <p className="font-sans text-sm text-cream-dim">
-            For this demo, skip straight to{" "}
-            <Link href="/reset-password" className="text-gold-bright transition-colors hover:text-gold-light">
-              resetting your password
-            </Link>{" "}
-            since there&rsquo;s no real inbox behind this yet.
-          </p>
+          <p className="font-sans text-sm text-cream-dim">Open the link in the email to choose a new password.</p>
         </div>
       </AuthCard>
     );

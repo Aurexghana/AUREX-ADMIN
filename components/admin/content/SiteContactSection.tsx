@@ -18,7 +18,7 @@ const EMPTY: SiteContact = {
   contactEmail: "",
   facebookUrl: "",
   twitterUrl: "",
-  linkedinUrl: "",
+  tiktokUrl: "",
   updatedAt: "",
 };
 
@@ -126,12 +126,12 @@ export default function SiteContactSection() {
               />
             </label>
             <label className={LABEL_CLASSNAME}>
-              <span className={LABEL_TEXT_CLASSNAME}>LinkedIn URL</span>
+              <span className={LABEL_TEXT_CLASSNAME}>TikTok URL</span>
               <input
                 type="url"
-                value={values.linkedinUrl}
-                onChange={(e) => set("linkedinUrl", e.target.value)}
-                placeholder="https://linkedin.com/..."
+                value={values.tiktokUrl}
+                onChange={(e) => set("tiktokUrl", e.target.value)}
+                placeholder="https://tiktok.com/@..."
                 className={INPUT_CLASSNAME}
               />
             </label>
