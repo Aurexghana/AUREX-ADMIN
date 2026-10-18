@@ -7,17 +7,17 @@
 import { apiFetch } from "@/lib/api/client";
 
 export async function requestPasswordReset(email: string): Promise<void> {
-  await apiFetch("/auth/forgot-password", { method: "POST", body: { email } });
+  await apiFetch("/auth/forgot-password", { method: "POST", body: { email, app: "admin" } });
 }
 
 /** Resolves true when the token is still usable; any API error means it isn't. */
 export async function validateResetToken(token: string): Promise<boolean> {
   try {
-    const { data } = await apiFetch<{ valid?: boolean } | null>("/auth/reset-password/validate", {
+    const { data } = await apiFetch<{ state?: "valid" | "expired" } | null>("/auth/reset-password/validate", {
       method: "POST",
       body: { token },
     });
-    return data?.valid !== false;
+    return data?.state === "valid";
   } catch {
     return false;
   }
